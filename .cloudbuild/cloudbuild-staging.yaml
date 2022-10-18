@@ -13,7 +13,7 @@ steps:
 # deploy
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['run', 'deploy', 
-  '$BRANCH_NAME-dot-farmme', 
+  '$BRANCH_NAME-cvid-admin', 
   '--image=gcr.io/$PROJECT_ID/farmme-nginx:$BRANCH_NAME', 
   '--port=80', '--timeout=900',
   '--allow-unauthenticated', '--region=asia-northeast1']
@@ -21,5 +21,5 @@ steps:
 # policy
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['run', 'services', 'add-iam-policy-binding',  
-  '--region=asia-northeast1', '$BRANCH_NAME-dot-farmme', '--member=allUsers', '--role=roles/run.invoker']
+  '--region=asia-northeast1', '$BRANCH_NAME-cvid-admin', '--member=allUsers', '--role=roles/run.invoker']
 timeout: "1600s"
