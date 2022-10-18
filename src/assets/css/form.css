@@ -1,0 +1,293 @@
+.sm_report_1{
+	float: left;
+	width: 30%;
+	margin-left: 20px;
+}
+.sm_report_2{
+	float: left;
+	width: 30%;
+	margin-left: 20px;
+}
+.sm_report_3{
+	float: left;
+	width: 20%;
+	margin-left: 20px;
+}
+.sm_report_4{
+	float: left;
+	width: 20%;
+	margin-left: 20px;
+}
+.sm_report_10{
+	float: left;
+	width: 5%;
+	margin-left: 20px;
+}
+.reporttitle{padding: 10px;}
+.reporttitle h4{border-bottom: 2px solid #444}
+#reporttable{height: 300px;overflow-x:scroll; }
+.content-header{
+    overflow: hidden;
+    padding-top: 20px;
+    background: #fff;
+    margin-bottom: 20px;
+}
+.content-header h1{
+    font-size: 16px;
+    float: left;width: 40%;
+    margin-left: 20px;
+}
+.icon-pencil {
+    background-position: 0 -72px !important;
+	cursor: pointer;
+}
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("../images/glyphicons-halflings.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 14px;
+    line-height: 14px;
+    margin-top: 1px;
+    vertical-align: text-top;
+    width: 14px;
+}
+.icon-remove-circle {
+    background-position: -168px -96px !important;
+	cursor: pointer;
+}
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("../images/glyphicons-halflings.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 14px;
+    line-height: 14px;
+    margin-top: 1px;
+    vertical-align: text-top;
+    width: 14px;
+}
+.productdetail{overflow: hidden;clear: both;}
+.images_edit img{max-height: 90px;}
+.sales_form{}
+.search_product{position: relative;}
+#searchlucene{position: absolute;top: 34px;width: 100%;background: #fff;display: none;}
+.search_table{width: 100%;box-shadow: 2px 2px 2px #888888;}
+.search_table tr td{padding:10px;border: 1px solid #ccc;cursor: pointer;}
+.search_table img{height: 60px;max-width: 90px;}
+.order_product{margin: 20px 5px;}
+.search_product:hover #searchlucene{display: block !important;}
+.choose_product{background: #fff;min-height: 500px;width: 66%;float: left;}
+.customer_info{float: right;width: 30%;min-height: 500px;background: #fff;padding: 15px;}
+.order_product_title{padding: 5px 10px;margin-top: 45px;border-bottom:1px solid #333;font-size: 14px;text-transform: uppercase; }
+.order_product_table{width: 100%}
+.order_product_table tr td{padding:10px;border-bottom: 1px solid #ccc;}
+.search_form{border: 1px solid #ddd;background: url("../images/search.png") right 5px no-repeat;margin:5px;}
+#searchtext{width: 90%;border: none;}
+.allcustomers{overflow-y: scroll;max-height: 250px;min-height: 150px;}
+#clear{clear: both;}
+.display_report_all{padding: 10px 35px}
+.display_report_all a{
+    background: url("../images/Excel_15.png") left 5px no-repeat;
+    position: relative;
+    padding: 12px 40px;
+}
+.functionicon{padding: 3px 7px !important}
+.panel-inverse th{text-align: left}
+.noshow{display: none !important;}
+.surveys{padding: 15px;}
+.surveys h4{font-size: 13px;}
+.rainfo{overflow-y: scroll;max-height: 190px;}
+.report_panel{padding: 20px 0; border:1px solid #ccc;overflow: hidden;margin-top:10px;border-bottom: none }
+.list_choise_package_item{height: 90px; overflow-y: scroll;}
+#printinvoice{position:absolute;top: 15px ;left:15px;font-size:14px;font-weight: bold;text-decoration: none }
+#printThisElement{margin-left: -10px !important;margin-right: -10px !important}
+.contract_title{text-transform: uppercase;border-bottom:2px solid #005c86;padding: 3px 0;margin: 5px 0;font-size: 16px; }
+.ngdialog-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    padding: 0 5px;
+}
+.ngdialog-close:before {
+    font-family: 'Helvetica', Arial, sans-serif;
+    content: '\00D7';
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+.panel-body_modal{padding: 15px 10px;position: relative;overflow: hidden;min-height: 40px;}
+.modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: table;
+    transition: opacity 0.3s ease;
+    padding-top: 5%;
+  }
+  
+  .modal-wrapper {
+    display: table-cell;
+    vertical-align: top;
+  }
+  
+  .modal-container {
+    width: 700px;
+    margin: 0px auto;
+    padding: 5px 5px;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+    transition: all 0.3s ease;
+    font-family: Helvetica, Arial, sans-serif;
+    
+  }
+  
+  .modal-header h3 {
+    margin-top: 0;
+    color: #42b983;
+  }
+  
+  .modal-body {
+    margin: 20px 0;
+  }
+  
+  .modal-default-button {
+    float: right;
+  }
+  
+  /*
+   * The following styles are auto-applied to elements with
+   * transition="modal" when their visibility is toggled
+   * by Vue.js.
+   *
+   * You can easily play with the modal transition by editing
+   * these styles.
+   */
+  
+  .modal-enter {
+    opacity: 0;
+  }
+  
+  .modal-leave-active {
+    opacity: 0;
+  }
+  
+  .modal-enter .modal-container,
+  .modal-leave-active .modal-container {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+
+  .modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: table;
+    transition: opacity 0.3s ease;
+    padding-top: 5%;
+  }
+  
+  .modal-wrapper {
+    display: table-cell;
+    vertical-align: top;
+  }
+  
+  .modal-container {
+    width: 700px;
+    margin: 0px auto;
+    padding: 5px 5px;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+    transition: all 0.3s ease;
+    font-family: Helvetica, Arial, sans-serif;
+    
+  }
+  
+  .modal-header h3 {
+    margin-top: 0;
+    color: #42b983;
+  }
+  
+  .modal-body {
+    margin: 20px 0;
+  }
+  
+  .modal-default-button {
+    float: right;
+  }
+  
+  /*
+   * The following styles are auto-applied to elements with
+   * transition="modal" when their visibility is toggled
+   * by Vue.js.
+   *
+   * You can easily play with the modal transition by editing
+   * these styles.
+   */
+  
+  .modal-enter {
+    opacity: 0;
+  }
+  
+  .modal-leave-active {
+    opacity: 0;
+  }
+  
+  .modal-enter .modal-container,
+  .modal-leave-active .modal-container {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+  .navbar-brand1>img {
+    display: inline;
+  }
+  .navbar-brand1 {
+    float: left;
+    height: 50px;
+    padding: 7px 15px;
+    font-size: 18px;
+    line-height: 20px
+  }
+.v-autocomplete-input{
+    display: block;
+    width: 100%;
+    height: 30px;
+    padding: 5px 12px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+
+}
+.choise_supplier{
+  width:100%;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+  list-style: none;
+  
+}
+.choise_supplier p{margin-right: 20px;margin: 5px;display:inline-block;}
+.select_list{z-index: 10000;background: #fff;}
+.slect_item{padding: 3px 5px;border-bottom: 1px solid #ccc;display: block;width: 100%;}
+.to_name{width: 400px;}
+.to_brand{width: 200px;}
+.to_unit{width: 50px;}
+.to_count{width: 35px;}
+.to_price{width: 140px;}
+.to_num{width: 50px;}
+
+
+
+
