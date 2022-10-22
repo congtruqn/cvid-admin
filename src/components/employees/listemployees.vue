@@ -2,12 +2,12 @@
 <template>
   <div>
     <section class="content-header">
-      <h1>Quản lý người dùng</h1>
+      <h1>Quản lý người tìm việc</h1>
       <ol class="breadcrumb">
         <li>
           <a><i class="fa fa-dashboard"></i>Trang chủ</a>
         </li>
-        <li><a>Danh sách người dùng</a></li>
+        <li><a>Danh sách người tìm việc</a></li>
       </ol>
     </section>
     <section class="panel panel-inverse">

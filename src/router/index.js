@@ -51,6 +51,33 @@ let router = new Router({
       }
     },
     {
+      path: '/jobtitles',
+      name: 'jobtitles',
+      component: () => import('@/components/jobtitles/listjobtitles'),
+      meta: {
+        requiresAuth: true,
+        layout: 'Default'
+      }
+    },
+    {
+      path: '/employees',
+      name: 'employees',
+      component: () => import('@/components/employees/listemployees'),
+      meta: {
+        requiresAuth: true,
+        layout: 'Default'
+      }
+    },
+    {
+      path: '/businesses',
+      name: 'businesses',
+      component: () => import('@/components/businesses/listbusinesses'),
+      meta: {
+        requiresAuth: true,
+        layout: 'Default'
+      }
+    },
+    {
       path: '/users',
       name: 'users',
       component: () => import('@/components/users/listusers'),

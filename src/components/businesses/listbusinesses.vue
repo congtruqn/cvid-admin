@@ -174,7 +174,7 @@ export default {
     if(this.$route.query.page===undefined){
       this.page =1;
     }
-    this.$http.get(`${BASE_URL}/employee/getall?page=${this.page}`,{headers: {'Authorization': `Basic ${localStorage.getItem('token')}` }})
+    this.$http.get(`${BASE_URL}/business/getall?page=${this.page}`,{headers: {'Authorization': `Basic ${localStorage.getItem('token')}` }})
       .then(response => {
         this.listinvoicetypes = response.data
         console.log(response.data)
@@ -182,13 +182,5 @@ export default {
       // this.$http.get('api/user/getcountuser',{headers: {'Authorization': `Basic ${localStorage.getItem('token')}` }})
       //   .then(response => (this.countinvoicetype = response.data.numofcompany));
     },
-    // created() {
-    //   this.$http.get(`${BASE_URL}/employee/getall`, {headers: {'Authorization': `Basic ${localStorage.getItem('token')}` }})
-    //   .then(response => {
-    //     console.log(response.data)
-    //     this.listinvoicetypes = response.data
-        
-    //     });
-    // }
 };
 </script>
