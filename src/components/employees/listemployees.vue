@@ -11,14 +11,43 @@
       </ol>
     </section>
     <section class="panel panel-inverse">
+      <multiselect
+        v-model="fields"
+        :options="options"
+        :multiple="true"
+        :close-on-select="false"
+        :clear-on-select="false"
+        :preserve-search="true"
+        placeholder="Pick some"
+        label="label"
+        track-by="key"
+        :preselect-first="true"
+      ></multiselect>
       <div class="row">
-        <vuetable
-          ref="vuetable"
-          :api-mode="false"
-          :fields="fields"
-          :data="items"
-          :options="options"
-        ></vuetable>
+        <div>
+          <b-table striped bordered hover :items="items" :fields="fields">
+            <template v-slot:cell(status)="{ item }">
+              <b-row>
+                <b-col sm="3"><b>Đã đăng kí</b></b-col>
+                <b-col sm="3"
+                  ><b>{{
+                    item.point === undefined ? "Chưa có CV" : "Đã có CV"
+                  }}</b></b-col
+                >
+                <b-col sm="3"
+                  ><b>{{
+                    item.point === undefined ? "" : "CV đang chờ duyệt"
+                  }}</b></b-col
+                >
+                <b-col sm="3"
+                  ><b>{{
+                    item.job ? displayUserStatus(item.job.status) : ""
+                  }}</b></b-col
+                >
+              </b-row>
+            </template>
+          </b-table>
+        </div>
 
         <table class="table table-bordered">
           <thead>
@@ -87,9 +116,9 @@
   </div>
 </template>
 <script>
-import Vuetable from "vuetable-2";
 import adduser from "@/components/employees/adduser";
 import edituser from "@/components/employees/edituser";
+import Multiselect from "vue-multiselect";
 const { BASE_URL } = require("../../utils/config");
 export default {
   data() {
@@ -101,34 +130,30 @@ export default {
       totalRows: 1,
       perPage: 20,
       currentPage: Number(this.$route.query.page),
-
-      countinvoicetype: "",
       page: Number(this.$route.query.page),
       editid: "",
-      fields: [
+      options: [
         {
-          name: "name",
-          sortField: "name",
+          key: "name",
+          label: "Họ và tên",
+          sortable: true,
         },
         {
-          name: "Trạng thái",
+          key: "status",
+          label: "Trạng thái",
+          sortable: false,
+          thClass: "text-center",
         },
+        { key: "actions", label: "Thao tác", sortable: false },
       ],
-      options: {
-        headings: {
-          name: 'Country Name',
-          code: 'Country Code',
-          uri: 'View Record'
-        },
-        sortable: ['name'],
-        filterable: ['name']
-      },
+      fields: [
+      ],
     };
   },
   components: {
     adduser,
     edituser,
-    Vuetable,
+    Multiselect,
   },
   methods: {
     showModal() {
@@ -170,16 +195,16 @@ export default {
     updateMessage(variable) {
       this.items = variable;
     },
-  
-    makeQueryParams (sortOrder, currentPage, perPage) {
+
+    makeQueryParams(sortOrder, currentPage, perPage) {
       return {
         sortBy: sortOrder[0].field,
         sortOrder: sortOrder[0].direction,
         pageNo: currentPage,
-        pageSize: perPage
-      }
+        pageSize: perPage,
+      };
     },
-  
+
     dellItem(id, name) {
       this.$confirm({
         message: "Bạn có muốn xóa " + name,
@@ -214,7 +239,7 @@ export default {
                       Authorization: `Basic ${localStorage.getItem("token")}`,
                     },
                   })
-                  .then((response) => (this.countinvoicetype = response.data));
+                  .then((response) => (this.totalRows = response.data));
               })
               .catch(function (error) {
                 console.error(error.response);
