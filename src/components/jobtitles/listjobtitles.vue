@@ -197,9 +197,12 @@ export default {
     if (this.$route.query.page === undefined) {
       this.currentPage = 1;
     }
-    // this.items = this.jobtitles.filter((item, index) => {
-    //   if (this.currentPage * perPage )
-    // })
+    this.items = this.jobtitles.filter((item, index) => {
+      if ((this.currentPage-1*perPage) <= index && index < this.currentPage * perPage){
+        return true
+      }
+      return false
+    })
     
   },
   created() {
