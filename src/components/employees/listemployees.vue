@@ -18,7 +18,7 @@
         :close-on-select="false"
         :clear-on-select="false"
         :preserve-search="true"
-        placeholder="Pick some"
+        placeholder="Nhập từ khóa"
         label="label"
         track-by="key"
         :preselect-first="true"
@@ -133,10 +133,22 @@ export default {
       page: Number(this.$route.query.page),
       editid: "",
       options: [
+
+        {
+          key: "status",
+          label: "Trạng thái",
+          sortable: false,
+          thClass: "text-center",
+        },
+       
+        { key: "actions", label: "Thao tác", sortable: false },
+      ],
+      fields: [
         {
           key: "name",
           label: "Họ và tên",
           sortable: true,
+          $isDisabled: true
         },
         {
           key: "status",
@@ -145,8 +157,6 @@ export default {
           thClass: "text-center",
         },
         { key: "actions", label: "Thao tác", sortable: false },
-      ],
-      fields: [
       ],
     };
   },
