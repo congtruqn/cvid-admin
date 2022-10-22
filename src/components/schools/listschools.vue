@@ -61,7 +61,7 @@
       >
         <paginate
           v-model="currentPage"
-          :page-count="Math.ceil(totalRows / perPage)"
+          :page-count="Math.ceil(totalRows / 20)"
           :page-range="3"
           :margin-pages="2"
           :click-handler="clickCallback"
@@ -87,15 +87,15 @@
   </div>
 </template>
 <script>
-import adduser from "@/components/jobtitles/adduser";
-import edituser from "@/components/jobtitles/edituser";
+import adduser from "@/components/schools/adduser";
+import edituser from "@/components/schools/edituser";
 const { BASE_URL } = require("../../utils/config");
 export default {
   data() {
     return {
       isModalVisible: false,
       isModalEditVisible: false,
-      jobtitles: [],
+      schools: [],
       items: [],
       totalRows: 1,
       perPage: 20,
@@ -134,7 +134,7 @@ export default {
       this.isModalEditVisible = false;
     },
     clickCallback(pageNum) {
-      this.items = this.jobtitles.filter((item, index) => {
+      this.items = this.schools.filter((item, index) => {
         if (
           (pageNum - 1) * this.perPage <= index &&
           index < pageNum * this.perPage
@@ -157,7 +157,7 @@ export default {
           if (confirm) {
             this.$http
               .post(
-                "jobtitle/delete",
+                "school/delete",
                 {
                   id: id,
                 },
@@ -169,15 +169,15 @@ export default {
               )
               .then((response) => {
                 this.$http
-                  .get(`${BASE_URL}/jobtitle/getall`, {
+                  .get(`${BASE_URL}/school/getall`, {
                     headers: {
                       Authorization: `Basic ${localStorage.getItem("token")}`,
                     },
                   })
                   .then((response) => {
-                    this.jobtitles = response.data;
+                    this.schools = response.data;
                     this.totalRows = response.data.length;
-                    this.items = this.jobtitles.filter((item, index) => {
+                    this.items = this.schools.filter((item, index) => {
                       if (
                         (this.currentPage - 1) * this.perPage <= index &&
                         index < this.currentPage * this.perPage
@@ -199,16 +199,16 @@ export default {
 
   created() {
     this.$http
-      .get(`${BASE_URL}/jobtitle/getall`, {
+      .get(`${BASE_URL}/school/getall`, {
         headers: { Authorization: `Basic ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        this.jobtitles = response.data;
+        this.schools = response.data;
         this.totalRows = response.data.length;
         if (this.$route.query.page === undefined) {
           this.currentPage = 1;
         }
-        this.items = this.jobtitles.filter((item, index) => {
+        this.items = this.schools.filter((item, index) => {
           if (
             (this.currentPage - 1) * this.perPage <= index &&
             index < this.currentPage * this.perPage

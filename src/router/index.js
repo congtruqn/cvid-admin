@@ -60,6 +60,15 @@ let router = new Router({
       }
     },
     {
+      path: '/schools',
+      name: 'schools',
+      component: () => import('@/components/schools/listschools'),
+      meta: {
+        requiresAuth: true,
+        layout: 'Default'
+      }
+    },
+    {
       path: '/employees',
       name: 'employees',
       component: () => import('@/components/employees/listemployees'),
@@ -72,15 +81,6 @@ let router = new Router({
       path: '/businesses',
       name: 'businesses',
       component: () => import('@/components/businesses/listbusinesses'),
-      meta: {
-        requiresAuth: true,
-        layout: 'Default'
-      }
-    },
-    {
-      path: '/users',
-      name: 'users',
-      component: () => import('@/components/users/listusers'),
       meta: {
         requiresAuth: true,
         layout: 'Default'

@@ -92,8 +92,8 @@
   </div>
 </template>
 <script>
-import adduser from '@/components/users/adduser';
-import edituser from '@/components/users/edituser';
+import adduser from '@/components/businesses/adduser';
+import edituser from '@/components/businesses/edituser';
 const { BASE_URL } = require("../../utils/config");
 export default {
   data() {
@@ -146,7 +146,7 @@ export default {
       dellInvoiceType(id,name){
         this.$confirm(
         {
-          message:'Bạn có muốn xóa loại hóa đơn ' + name,
+          message:'Bạn có muốn xóa ' + name,
           button: {
             yes: 'Đồng ý'
           },
