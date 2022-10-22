@@ -9,7 +9,7 @@
 <form class="navbar-form full-width">
 							<div class="form-group1">
 								<input type="text" class="form-control" placeholder="Tìm hóa đơn">
-								<button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
+								<button type="submit" class="btn btn-search" style="margin-top:-4px"><i class="fa fa-search"></i></button>
 							</div>
 						</form>
     </li>

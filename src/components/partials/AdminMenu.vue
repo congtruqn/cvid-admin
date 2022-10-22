@@ -13,6 +13,7 @@
           <li><a href="/toquote">Quản lý báo giá</a></li> 
         </ul>
       </li>
+      
       <li class="has-sub">
         <a href="#">
           <i class="fa fa-gears"></i>
@@ -20,9 +21,27 @@
           <b class="caret pull-right"></b>
         </a>
         <ul class="sub-menu">
-          <li><a href="/users">Quản lý người dùng</a></li>
+          <li><a href="/employees">Quản lý người tìm việc</a></li>
+          <li><a href="/businesses">Quản lý nhà tuyển dụng</a></li>
           <li><a href="/administrator/listuseraction">Quản lí tác vụ</a></li>
           <li><a href="/administrator/listgroupuser">Quản lí Nhóm Quyền</a></li>
+        </ul>
+      </li>
+      <li class="has-sub">
+        <a href="#">
+          <i class="fa fa-gears"></i>
+            <span>Quản lý danh mục</span>
+          <b class="caret pull-right"></b>
+        </a>
+        <ul class="sub-menu">
+          <li><a href="/jobtitles">Chức danh công việc</a></li>
+          <li><a href="/">Môi trường làm việc</a></li>
+          <li><a href="/">Loại hình doanh nghiệp</a></li>
+          <li><a href="/schools">Danh sách trường</a></li>
+          <li><a href="/">Danh sách chức vụ</a></li>
+          <li><a href="/">Danh sách chuyên nghành</a></li>
+          <li><a href="/">Nghành công nghiệp</a></li>
+          <li><a href="/a">Câu hỏi đánh giá</a></li>
         </ul>
       </li>
     </ul>
