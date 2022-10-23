@@ -28,15 +28,9 @@
           <b-table striped bordered hover :items="items" :fields="fields">
             <template v-slot:cell(status)="{ item }">
               <b-row>
-                <b-col sm="3"><b>Đã đăng kí</b></b-col>
-                <b-col sm="3"
+                <b-col sm="6"
                   ><b>{{
                     item.point === undefined ? "Chưa có CV" : "Đã có CV"
-                  }}</b></b-col
-                >
-                <b-col sm="3"
-                  ><b>{{
-                    item.point === undefined ? "" : "CV đang chờ duyệt"
                   }}</b></b-col
                 >
                 <b-col sm="3"
