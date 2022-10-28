@@ -67,40 +67,6 @@
             <b>{{ item.job ? displayJobStatus(item.job.status) : "" }}</b>
           </template>
         </b-table>
-
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th width="25px">STT</th>
-              <th>Tên người dùng</th>
-
-              <th colspan="4" class="text-center">Trạng thái</th>
-              <th width="15px" class="functionicon"></th>
-              <th width="15px" class="functionicon"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in items" :key="index">
-              <td>{{ (currentPage - 1) * 20 + index + 1 }}</td>
-              <td>{{ item.name }}</td>
-              <td>Đã đăng kí</td>
-              <td>{{ item.point ? "Đã tạo cv" : "Chưa tạo cv" }}</td>
-              <td>{{ "Chưa được duyệt" }}</td>
-              <td>{{ item.job ? displayJobStatus(item.job.status) : "" }}</td>
-              <td>
-                <span>
-                  <a href="#" @click="showisModalEditVisible(item)">
-                    <i class="fa fa-edit"></i>
-                  </a>
-                </span>
-              </td>
-              <td>
-                <a href="#" @click="dellItem(item._id, item.name)">
-                  <i class="fa fa-trash"></i>
-                </a>
-              </td>
-            </tr>
-          </tbody>
         </table>
       </div>
       <div
