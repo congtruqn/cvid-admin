@@ -13,47 +13,39 @@
     <section class="panel panel-inverse">
       <div class="row">
         <div class="panel-body">
-          <button class="btn btn-primary m-r-5 m-b-5" @click="showModal">
-            Thêm chức danh công việc
-          </button>
+          <b-form inline v-on:submit.prevent>
+            <b-form-select
+              v-model="perPage"
+              :options="pageOptions"
+              class="form-control"
+              @input="clickCallback(1)"
+            ></b-form-select>
+            <b-button variant="primary" @click="showModal" style="float: right"
+              >Thêm chức danh công việc</b-button
+            >
+            <b-input-group size="sm" class="m-r-5" style="float: right">
+              <b-form-input
+                type="search"
+                v-model="filter"
+                placeholder="Search terms"
+              ></b-form-input>
+            </b-input-group>
+          </b-form>
         </div>
-
-        <table class="table">
-          <thead>
-            <tr>
-              <th width="25px">STT</th>
-              <th>Tên chức danh công việc</th>
-              <!-- <th>Username</th> -->
-              <!-- <th>Email</th>
-              <th>Điện thoại</th> -->
-              <!-- <th>Phân quyền</th> -->
-              <th width="15px" class="functionicon"></th>
-              <th width="15px" class="functionicon"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in items" :key="index">
-              <td>{{ (currentPage - 1) * 20 + index + 1 }}</td>
-              <td>{{ item.name }}</td>
-              <!-- <td>{{ item.username }}</td> -->
-              <!-- <td>{{ item.email }}</td> -->
-              <!-- <td>{{ item.username }}</td> -->
-              <!-- <td>{{ displayUserType(item.type) }}</td> -->
-              <td>
-                <span>
-                  <a href="#" @click="showisModalEditVisible(item)">
-                    <i class="fa fa-edit"></i>
-                  </a>
-                </span>
-              </td>
-              <td>
-                <a href="#" @click="dellItem(item._id, item.name)">
-                  <i class="fa fa-trash"></i>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <b-table
+          striped
+          bordered
+          :items="items"
+          :fields="fields"
+          :current-page="currentPage"
+          :per-page="perPage"
+          :filter="filter"
+          @filtered="onFiltered"
+        >
+          <template #cell(index)="data">
+            {{ data.index + 1 }}
+          </template>
+        </b-table>
       </div>
       <div
         id="example2_paginate"
@@ -93,19 +85,40 @@ const { BASE_URL } = require("../../utils/config");
 export default {
   data() {
     return {
+      filter: null,
       isModalVisible: false,
       isModalEditVisible: false,
       jobtitles: [],
       items: [],
       totalRows: 1,
       perPage: 20,
+      pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       editid: "",
+      fields: [
+        { key: "index", label: "STT" },
+        {
+          key: "name",
+          label: "Chức danh công việc",
+          sortable: true,
+        },
+        { key: "actions", label: "Thao tác", sortable: false },
+      ],
     };
   },
   components: {
     adduser,
     edituser,
+  },
+  computed: {
+    sortOptions() {
+      // Create an options list from our fields
+      return this.fields
+        .filter((f) => f.sortable)
+        .map((f) => {
+          return { text: f.label, value: f.key };
+        });
+    },
   },
   methods: {
     showModal() {
@@ -134,16 +147,13 @@ export default {
       this.isModalEditVisible = false;
     },
     clickCallback(pageNum) {
-      this.items = this.jobtitles.filter((item, index) => {
-        if (
-          (pageNum - 1) * this.perPage <= index &&
-          index < pageNum * this.perPage
-        ) {
-          return true;
-        }
-        return false;
-      });
+      this.currentPage = pageNum
     },
+    onFiltered(filteredItems) {
+        // Trigger pagination to update the number of buttons/pages due to filtering
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
+      },
     updateMessage(variable) {
       this.items = variable;
     },
@@ -208,15 +218,7 @@ export default {
         if (this.$route.query.page === undefined) {
           this.currentPage = 1;
         }
-        this.items = this.jobtitles.filter((item, index) => {
-          if (
-            (this.currentPage - 1) * this.perPage <= index &&
-            index < this.currentPage * this.perPage
-          ) {
-            return true;
-          }
-          return false;
-        });
+        this.items = this.jobtitles
       });
   },
 };

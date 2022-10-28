@@ -24,64 +24,49 @@
         :preselect-first="true"
       ></multiselect>
       <div class="row">
-        <div>
-          <b-table striped bordered hover :items="items" :fields="fields">
-            <template v-slot:cell(status)="{ item }">
-              <b-row>
-                <b-col sm="3"><b>Đã đăng kí</b></b-col>
-                <b-col sm="3"
-                  ><b>{{
-                    item.point === undefined ? "Chưa có CV" : "Đã có CV"
-                  }}</b></b-col
-                >
-                <b-col sm="3"
-                  ><b>{{
-                    item.point === undefined ? "" : "CV đang chờ duyệt"
-                  }}</b></b-col
-                >
-                <b-col sm="3"
-                  ><b>{{
-                    item.job ? displayUserStatus(item.job.status) : ""
-                  }}</b></b-col
-                >
-              </b-row>
-            </template>
-          </b-table>
-        </div>
+        <b-form inline class="m-b-5 m-t-5"> 
+          <b-form-select
+            v-model="perPage"
+            :options="pageOptions"
+            class="form-control"
+          ></b-form-select>
+          <b-input-group
+            size="sm"
+            class=""
+            style="float: right"
+          >
+            <b-form-input
+              type="search"
+              v-model="filter"
+              placeholder="Search terms"
+            ></b-form-input>
+          </b-input-group>
 
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th width="25px">STT</th>
-              <th>Tên người dùng</th>
+        </b-form>
 
-              <th colspan="4" class="text-center">Trạng thái</th>
-              <th width="15px" class="functionicon"></th>
-              <th width="15px" class="functionicon"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in items" :key="index">
-              <td>{{ (currentPage - 1) * 20 + index + 1 }}</td>
-              <td>{{ item.name }}</td>
-              <td>Đã đăng kí</td>
-              <td>{{ item.point ? "Đã tạo cv" : "Chưa tạo cv" }}</td>
-              <td>{{ "Chưa được duyệt" }}</td>
-              <td>{{ item.job ? displayUserStatus(item.job.status) : "" }}</td>
-              <td>
-                <span>
-                  <a href="#" @click="showisModalEditVisible(item)">
-                    <i class="fa fa-edit"></i>
-                  </a>
-                </span>
-              </td>
-              <td>
-                <a href="#" @click="dellItem(item._id, item.name)">
-                  <i class="fa fa-trash"></i>
-                </a>
-              </td>
-            </tr>
-          </tbody>
+        <b-table
+          striped
+          bordered
+          hover
+          :items="items"
+          :fields="fields"
+          :filter="filter"
+        >
+          <template v-slot:cell(approved)="{ item }">
+            <b
+              >{{ displayCvidStatus(item.approved) }}
+              <b-icon
+                icon="newspaper"
+                variant="primary"
+                style="float: right"
+                @click="showisModalViewCv(item)"
+              ></b-icon>
+            </b>
+          </template>
+          <template v-slot:cell(job.status)="{ item }">
+            <b>{{ item.job ? displayJobStatus(item.job.status) : "" }}</b>
+          </template>
+        </b-table>
         </table>
       </div>
       <div
@@ -101,6 +86,7 @@
         >
         </paginate>
       </div>
+      <viewcv :cvid="cvid" v-show="isModalViewCv" @close="closeModalViewCv" />
       <adduser
         @inputData="updateMessage"
         v-show="isModalVisible"
@@ -118,29 +104,38 @@
 <script>
 import adduser from "@/components/employees/adduser";
 import edituser from "@/components/employees/edituser";
+import viewcv from "@/components/employees/viewcv";
 import Multiselect from "vue-multiselect";
 const { BASE_URL } = require("../../utils/config");
 export default {
   data() {
     return {
+      filter: null,
       isModalVisible: false,
       isModalEditVisible: false,
+      isModalViewCv: false,
       jobtitles: [],
       items: [],
       totalRows: 1,
       perPage: 20,
+      pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
       editid: "",
+      cvid: "",
       options: [
-
         {
-          key: "status",
-          label: "Trạng thái",
-          sortable: false,
+          key: "approved",
+          label: "Trạng thái Cvid",
+          sortable: true,
           thClass: "text-center",
         },
-       
+        {
+          key: "job.status",
+          label: "Trạng thái tìm việc",
+          sortable: true,
+          thClass: "text-center",
+        },
         { key: "actions", label: "Thao tác", sortable: false },
       ],
       fields: [
@@ -148,12 +143,18 @@ export default {
           key: "name",
           label: "Họ và tên",
           sortable: true,
-          $isDisabled: true
+          $isDisabled: true,
         },
         {
-          key: "status",
-          label: "Trạng thái",
-          sortable: false,
+          key: "approved",
+          label: "Trạng thái Cvid",
+          sortable: true,
+          thClass: "text-center",
+        },
+        {
+          key: "job.status",
+          label: "Trạng thái tìm việc",
+          sortable: true,
           thClass: "text-center",
         },
         { key: "actions", label: "Thao tác", sortable: false },
@@ -163,6 +164,7 @@ export default {
   components: {
     adduser,
     edituser,
+    viewcv,
     Multiselect,
   },
   methods: {
@@ -173,23 +175,18 @@ export default {
       this.editid = id;
       this.isModalEditVisible = true;
     },
+    showisModalViewCv(id) {
+      this.cvid = id;
+      this.isModalViewCv = true;
+    },
     closeModal() {
       this.isModalVisible = false;
     },
-    displayUserStatus(id) {
-      switch (id) {
-        case 1:
-          return "Đang tìm việc";
-          break;
-        case 0:
-          return "Chưa tìm việc";
-          break;
-        default:
-          return "Đã đăng kí";
-      }
-    },
     closeEditModal() {
       this.isModalEditVisible = false;
+    },
+    closeModalViewCv() {
+      this.isModalViewCv = false;
     },
     clickCallback(pageNum) {
       this.items = this.employees.filter((item, index) => {
@@ -213,6 +210,33 @@ export default {
         pageNo: currentPage,
         pageSize: perPage,
       };
+    },
+    displayJobStatus(id) {
+      switch (id) {
+        case 1:
+          return "Đang tìm việc";
+          break;
+        case 0:
+          return "Tạm dừng tìm việc";
+          break;
+        default:
+          return "Đang làm việc";
+      }
+    },
+    displayCvidStatus(id) {
+      switch (id) {
+        case -1:
+          return "Chưa có CVID";
+          break;
+        case 0:
+          return "CVID đang chờ duyệt";
+          break;
+        case 1:
+          return "CVID đã duyệt";
+          break;
+        default:
+          return "CVID cần chỉnh sửa";
+      }
     },
 
     dellItem(id, name) {
