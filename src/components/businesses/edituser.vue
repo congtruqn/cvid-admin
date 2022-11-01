@@ -11,13 +11,13 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">Họ và Tên</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="editid.name">
+                <input type="text" class="form-control" v-model="itemid.name">
               </div>
             </div>
             <div class="form-group">
               <label class="col-sm-3 control-label">Tên đăng nhập</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="editid.username">
+                <input type="text" class="form-control" v-model="itemid.username">
               </div>
             </div>
             <div class="form-group">
@@ -35,25 +35,25 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">Email</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="editid.email">
+                <input type="text" class="form-control" v-model="itemid.email">
               </div>
             </div>
             <div class="form-group">
               <label class="col-sm-3 control-label">Điện thoại</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="editid.phone">
+                <input type="text" class="form-control" v-model="itemid.phone">
               </div>
             </div>
             <div class="form-group">
               <label class="col-sm-3 control-label">Địa chỉ</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="editid.address">
+                <input type="text" class="form-control" v-model="itemid.address">
               </div>
             </div>
             <div class="form-group">
               <label class="col-sm-3 control-label">Phân quyền</label>
               <div class="col-sm-9">
-                <select v-model="editid.type" class="form-control">
+                <select v-model="itemid.type" class="form-control">
                   <option v-for="option in options" v-bind:value="option.value">
                     {{ option.text }}
                   </option>
@@ -63,7 +63,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">Trạng thái</label>
               <div class="col-sm-9">
-                <select v-model="editid.status" class="form-control">
+                <select v-model="itemid.status" class="form-control">
                   <option v-for="status in statuss" v-bind:value="status.value">
                     {{ status.text }}
                   </option>
@@ -99,18 +99,18 @@
     },
     methods: {
         handleSubmit() {
-                if (this.editid.username.length > 6) {
+                if (this.itemid.username.length > 6) {
                   if (this.password === this.repassword) {
                       this.$http.post('api/user/edituser', {
-                        name : this.editid.name,
-                        username : this.editid.username,
+                        name : this.itemid.name,
+                        username : this.itemid.username,
                         password: this.password,
-                        email: this.editid.email,
-                        phone: this.editid.phone,
-                        address: this.editid.address,
-                        type: this.editid.type,
-                        status: this.editid.status,
-                        id:this.editid._id,
+                        email: this.itemid.email,
+                        phone: this.itemid.phone,
+                        address: this.itemid.address,
+                        type: this.itemid.type,
+                        status: this.itemid.status,
+                        id:this.itemid._id,
                       },
                       {headers: {'Authorization': `Basic ${localStorage.getItem('token')}` }}
                       )
@@ -131,7 +131,7 @@
         }
         
     },
-    props:['editid'],
+    props:['itemid'],
     
   };
 </script>

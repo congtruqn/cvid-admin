@@ -11,7 +11,7 @@
                 @click="$emit('close')"
               ></button>
             </div>
-            <img class="imgGPKD" :src="getUrlImage(itemid.urlGPKD)" />
+            <img class="imgGPKD" :src="itemid.urlGPKD" />
             <div class="panel-body_modal">
               <button
                 class="btn btn-primary float-right m-r-5 m-b-5"

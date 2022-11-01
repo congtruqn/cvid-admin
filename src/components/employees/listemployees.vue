@@ -86,7 +86,7 @@
         >
         </paginate>
       </div>
-      <viewcv :cvid="cvid" v-show="isModalViewCv" @close="closeModalViewCv" />
+      <viewcv :itemid="cvid" v-show="isModalViewCv" @close="closeModalViewCv" />
       <adduser
         @inputData="updateMessage"
         v-show="isModalVisible"
@@ -226,16 +226,19 @@ export default {
     displayCvidStatus(id) {
       switch (id) {
         case -1:
-          return "Chưa có CVID";
+          return "Không được duyệt";
           break;
         case 0:
-          return "CVID đang chờ duyệt";
+          return "Đang chờ duyệt";
           break;
         case 1:
-          return "CVID đã duyệt";
+          return "Đã duyệt lần 1";
+          break;
+        case 2:
+          return "Đã duyệt lần 2";
           break;
         default:
-          return "CVID cần chỉnh sửa";
+          return "Chưa tạo CV";
       }
     },
 

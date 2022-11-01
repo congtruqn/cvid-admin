@@ -66,50 +66,14 @@
             <b>{{ item.job ? displayJobStatus(item.job.status) : "" }}</b>
           </template> -->
            <template v-slot:cell(actions)="{ item }">
-        
+              <b-icon
+                icon="trash"
+                variant="danger"
+                style="margin: auto"
+                @click="deleteItem(item._id)"
+              ></b-icon>
           </template>
         </b-table>
-        <table class="table">
-          <thead>
-            <tr>
-              <th width="25px">STT</th>
-              <th>Tên người dùng</th>
-              <!-- <th>Username</th> -->
-              <th>Email</th>
-              <th>Điện thoại</th>
-              <!-- <th>Phân quyền</th> -->
-              <th width="15px" class="functionicon"></th>
-              <th width="15px" class="functionicon"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(invoicetype, index) in items" :key="index">
-              <td>{{ (page - 1) * 20 + index + 1 }}</td>
-              <td>{{ invoicetype.name }}</td>
-              <!-- <td>{{ invoicetype.username }}</td> -->
-              <td>{{ invoicetype.email }}</td>
-              <td>{{ invoicetype.username }}</td>
-              <!-- <td>{{ displayUserType(invoicetype.type) }}</td> -->
-              <td>
-                <span>
-                  <a href="#" @click="showisModalEditVisible(invoicetype)">
-                    <i class="fa fa-edit"></i>
-                  </a>
-                </span>
-              </td>
-              <td>
-                <a
-                  href="#"
-                  @click="
-                    dellInvoiceType(invoicetype._id, invoicetype.toquote_name)
-                  "
-                >
-                  <i class="fa fa-trash"></i>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
       <div
         id="example2_paginate"
@@ -189,6 +153,12 @@ export default {
           label: "Tên công ty",
           sortable: true,
           $isDisabled: true,
+        },
+        {
+          key: "approved",
+          label: "Giấy phép kinh doanh",
+          sortable: true,
+          thClass: "text-center",
         },
         // {
         //   key: "approved",

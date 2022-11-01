@@ -5,75 +5,36 @@
         <div class="modal-container">
           <div>
             <div class="panel-body_modal">
-              <button aria-label="Dismiss" class="ngdialog-close" @click="$emit('close')"></button>
+              <button
+                aria-label="Dismiss"
+                class="ngdialog-close"
+                @click="$emit('close')"
+              ></button>
             </div>
-            <h1 class="text-center">CVID:{{cvid.username}}</h1>
-            <!-- <div class="form-group">
-              <label class="col-sm-3 control-label">Họ và Tên</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="cvid.name">
-              </div>
+            <h1 class="text-center text-primary">CVID: {{itemid.username}}</h1>
+            
             </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Tên đăng nhập</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="cvid.username">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Mật khẩu</label>
-              <div class="col-sm-9">
-                <input type="password" class="form-control" v-model="password">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Nhập lại mật khẩu</label>
-              <div class="col-sm-9">
-                <input type="password" class="form-control" v-model="repassword">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Email</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="cvid.email">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Điện thoại</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="cvid.phone">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Địa chỉ</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" v-model="cvid.address">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Phân quyền</label>
-              <div class="col-sm-9">
-                <select v-model="cvid.type" class="form-control">
-                  <option v-for="option in options" v-bind:value="option.value">
-                    {{ option.text }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Trạng thái</label>
-              <div class="col-sm-9">
-                <select v-model="cvid.status" class="form-control">
-                  <option v-for="status in statuss" v-bind:value="status.value">
-                    {{ status.text }}
-                  </option>
-                </select>
-              </div>
-            </div> -->
             <div class="panel-body_modal">
-                <button class="btn btn-primary float-right m-r-5 m-b-5" @click="handleSubmit">Duyệt</button>
-              <button class="btn btn-success m-r-5 m-b-5" @click="handleSubmit">Không duyệt</button>
-              <button class="btn btn-secondary m-r-5 m-b-5" @click="handleSubmit">Để sau</button>
+              <button
+              v-if="itemid.approved<1"
+                class="btn btn-primary float-right m-r-5 m-b-5"
+                @click="handleBrowse1"
+              >
+                Duyệt lần 1
+              </button>
+              <button
+              v-if="itemid.approved==1"
+                class="btn btn-primary float-right m-r-5 m-b-5"
+                @click="handleBrowse2"
+              >
+                Duyệt lần 2
+              </button>
+              <button class="btn btn-success m-r-5 m-b-5" v-if="itemid.approved==0" @click="notBrowse">
+                Không duyệt
+              </button>
+              <button class="btn btn-success m-r-5 m-b-5" v-if="itemid.approved==1" @click="cancelBrowse">
+                Hủy duyệt lần 1
+              </button>
             </div>
           </div>
         </div>
@@ -82,58 +43,74 @@
   </transition>
 </template>
 <script>
-  export default {
-    name: 'EditInvoiceType',
-    data(){
-      return {
-          password: '',
-          repassword: '',
-          options: [
-            { text: 'Nhân viên', value: 3 },
-            { text: 'Người quản lý', value: 2 },
-            { text: 'Quản trị viên', value: 1 }
-          ],
-          statuss: [
-            { text: 'Hoạt động', value: 1 },
-            { text: 'Tạm dừng', value: 0 }
-          ]
+const { BASE_URL } = require("../../utils/config");
+export default {
+  name: "EditInvoiceType",
+  data() {
+    return {
+      criteria: [],
+    };
+  },
+  methods: {
+    handleBrowse1() {
+      this.itemid.approved = 1;
+    },
+    handleBrowse2() {
+      this.itemid.approved = 2;
+    },
+    cancelBrowse() {
+      this.itemid.approved = 0;
+    },
+    notBrowse() {
+      this.itemid.approved = -1;
+    },
+    handleSubmit() {
+      if (this.itemid.username.length > 6) {
+        if (this.password === this.repassword) {
+          this.$http
+            .post(
+              "api/user/edituser",
+              {
+                name: this.itemid.name,
+                username: this.itemid.username,
+                password: this.password,
+                email: this.itemid.email,
+                phone: this.itemid.phone,
+                address: this.itemid.address,
+                type: this.itemid.type,
+                status: this.itemid.status,
+                id: this.itemid._id,
+              },
+              {
+                headers: {
+                  Authorization: `Basic ${localStorage.getItem("token")}`,
+                },
+              }
+            )
+            .then((response) => {
+              this.$emit("close");
+            })
+            .catch(function (error) {
+              console.error(error.response);
+            });
+        } else {
+          alert("Mật khẩu phải giống nhau!");
+        }
+      } else {
+        alert("Tên đăng nhập quá ngắn!");
       }
     },
-    methods: {
-        handleSubmit() {
-                if (this.cvid.username.length > 6) {
-                  if (this.password === this.repassword) {
-                      this.$http.post('api/user/edituser', {
-                        name : this.cvid.name,
-                        username : this.cvid.username,
-                        password: this.password,
-                        email: this.cvid.email,
-                        phone: this.cvid.phone,
-                        address: this.cvid.address,
-                        type: this.cvid.type,
-                        status: this.cvid.status,
-                        id:this.cvid._id,
-                      },
-                      {headers: {'Authorization': `Basic ${localStorage.getItem('token')}` }}
-                      )
-                      .then(response => {
-                        this.$emit('close');
-                      })
-                      .catch(function (error) {
-                          console.error(error.response);
-                      });
-                  }
-                  else{
-                    alert("Mật khẩu phải giống nhau!")
-                  }
-                }
-                else{
-                  alert("Tên đăng nhập quá ngắn!")
-                }
-        }
-        
-    },
-    props:['cvid'],
-    
-  };
+  },
+  created() {
+    this.$http
+      .get(`${BASE_URL}/criteria/getall`)
+      .then((res) => {
+        this.criteria = res.data;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  },
+  props: ["itemid"],
+};
 </script>
