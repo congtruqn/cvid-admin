@@ -14,6 +14,21 @@
             <h1 class="text-center text-primary">
               CVID: {{ itemid.username }}
             </h1>
+            <h2><input type="checkbox"/> Hồ sơ cá nhân</h2>
+            <p>
+              <span>Họ và tên: </span><span>{{ itemid.name }}</span>
+            </p>
+            <p><span>Ngày sinh: </span><span>{{itemid.birthdate}}</span></p>
+            <p><span>Giới tính</span><span>{{itemid.gender}}</span></p>
+            <p><span>Số điện thoại: </span>{{itemid.username}}<span></span></p>
+            <p><span>Email: </span><span>{{itemid.email}}</span></p>
+            <p><span>Địa chỉ: </span><span>{{itemid.address+', '+itemid.ward+', '+itemid.district+', '+itemid.province}}</span></p>
+            <h2><input type="checkbox"/> Kinh nghiệm làm việc</h2>
+            <h2><input type="checkbox"/> Quá trình học tập</h2>
+            <h2><input type="checkbox"/> Các khoá đào tạo ngắn hạn</h2>
+            <h2> Khả năng ngoại ngữ và vi tính</h2>
+            <h2> Kỹ năng khác</h2>
+            
             
           </div>
           <div class="panel-body_modal">
