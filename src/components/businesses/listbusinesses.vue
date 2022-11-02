@@ -70,7 +70,7 @@
                 icon="trash"
                 variant="danger"
                 style="margin: auto"
-                @click="deleteItem(item._id)"
+                @click="deleteItem(item._id, item.name)"
               ></b-icon>
           </template>
         </b-table>
@@ -239,7 +239,7 @@ export default {
     updateMessage(variable) {
       this.items = variable;
     },
-    dellInvoiceType(id, name) {
+    deleteItem(id, name) {
       this.$confirm({
         message: "Bạn có muốn xóa " + name,
         button: {
@@ -248,11 +248,9 @@ export default {
         callback: (confirm) => {
           if (confirm) {
             this.$http
-              .post(
-                "api/toquote/delltoquote",
-                {
-                  id: id,
-                },
+              .get(
+                `${BASE_URL}/business/delete/${id}`,
+     
                 {
                   headers: {
                     Authorization: `Basic ${localStorage.getItem("token")}`,
@@ -261,7 +259,7 @@ export default {
               )
               .then((response) => {
                 this.$http
-                  .get(`${BASE_URL}/employee/getall?page=${this.page}`, {
+                  .get(`${BASE_URL}/business/getall`, {
                     headers: {
                       Authorization: `Basic ${localStorage.getItem("token")}`,
                     },
@@ -289,20 +287,11 @@ export default {
         headers: { Authorization: `Basic ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        this.employees = response.data;
+        this.items = response.data;
         this.totalRows = response.data.length;
         if (this.$route.query.page === undefined) {
           this.currentPage = 1;
         }
-        this.items = this.employees.filter((item, index) => {
-          if (
-            (this.currentPage - 1) * this.perPage <= index &&
-            index < this.currentPage * this.perPage
-          ) {
-            return true;
-          }
-          return false;
-        });
       });
   },
 };

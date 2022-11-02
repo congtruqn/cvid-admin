@@ -11,31 +11,40 @@
                 @click="$emit('close')"
               ></button>
             </div>
-            <h1 class="text-center text-primary">CVID: {{itemid.username}}</h1>
+            <h1 class="text-center text-primary">
+              CVID: {{ itemid.username }}
+            </h1>
             
-            </div>
-            <div class="panel-body_modal">
-              <button
-              v-if="itemid.approved<1"
-                class="btn btn-primary float-right m-r-5 m-b-5"
-                @click="handleBrowse1"
-              >
-                Duyệt lần 1
-              </button>
-              <button
-              v-if="itemid.approved==1"
-                class="btn btn-primary float-right m-r-5 m-b-5"
-                @click="handleBrowse2"
-              >
-                Duyệt lần 2
-              </button>
-              <button class="btn btn-success m-r-5 m-b-5" v-if="itemid.approved==0" @click="notBrowse">
-                Không duyệt
-              </button>
-              <button class="btn btn-success m-r-5 m-b-5" v-if="itemid.approved==1" @click="cancelBrowse">
-                Hủy duyệt lần 1
-              </button>
-            </div>
+          </div>
+          <div class="panel-body_modal">
+            <button
+              v-if="itemid.approved < 1"
+              class="btn btn-primary float-right m-r-5 m-b-5"
+              @click="handleBrowse1"
+            >
+              Duyệt lần 1
+            </button>
+            <button
+              v-if="itemid.approved == 1"
+              class="btn btn-primary float-right m-r-5 m-b-5"
+              @click="handleBrowse2"
+            >
+              Duyệt lần 2
+            </button>
+            <button
+              class="btn btn-success m-r-5 m-b-5"
+              v-if="itemid.approved == 0"
+              @click="notBrowse"
+            >
+              Không duyệt
+            </button>
+            <button
+              class="btn btn-success m-r-5 m-b-5"
+              v-if="itemid.approved == 1"
+              @click="cancelBrowse"
+            >
+              Hủy duyệt lần 1
+            </button>
           </div>
         </div>
       </div>
@@ -53,16 +62,53 @@ export default {
   },
   methods: {
     handleBrowse1() {
-      this.itemid.approved = 1;
+      this.$http
+        .get(`${BASE_URL}/employee/browse-cvid1/${this.itemid._id}`, {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          this.itemid.approved = 1;
+          this.$emit("close");
+        })
+        .catch(function (error) {
+          console.error(error.response);
+        });
     },
     handleBrowse2() {
-      this.itemid.approved = 2;
+      this.$http
+        .get(`${BASE_URL}/employee/browse-cvid2/${this.itemid._id}`, {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          this.itemid.approved = 2;
+          this.$emit("close");
+        })
+        .catch(function (error) {
+          console.error(error.response);
+        });
     },
     cancelBrowse() {
-      this.itemid.approved = 0;
+      this.$http
+        .get(`${BASE_URL}/employee/cancel-browse-cvid/${this.itemid._id}`, {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          this.itemid.approved = 0;
+          this.$emit("close");
+        })
+        .catch(function (error) {
+          console.error(error.response);
+        });
     },
     notBrowse() {
       this.itemid.approved = -1;
+      this.$emit("close");
     },
     handleSubmit() {
       if (this.itemid.username.length > 6) {

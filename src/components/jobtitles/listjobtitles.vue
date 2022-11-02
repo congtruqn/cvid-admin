@@ -93,7 +93,7 @@ export default {
       totalRows: 1,
       perPage: 20,
       pageOptions: [10, 20, 50, 100],
-      currentPage: Number(this.$route.query.page),
+      currentPage: Number(this.$route.query.page) || 1,
       editid: "",
       fields: [
         { key: "index", label: "STT" },
@@ -213,12 +213,11 @@ export default {
         headers: { Authorization: `Basic ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        this.jobtitles = response.data;
+        this.items = response.data;
         this.totalRows = response.data.length;
         if (this.$route.query.page === undefined) {
           this.currentPage = 1;
         }
-        this.items = this.jobtitles
       });
   },
 };

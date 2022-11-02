@@ -14,19 +14,24 @@
             <img class="imgGPKD" :src="itemid.urlGPKD" />
             <div class="panel-body_modal">
               <button
+              v-if="itemid.approved<1"
                 class="btn btn-primary float-right m-r-5 m-b-5"
-                @click="handleSubmit"
+                @click="handleBrowse1"
               >
-                Duyệt
-              </button>
-              <button class="btn btn-success m-r-5 m-b-5" @click="handleSubmit">
-                Không duyệt
+                Duyệt lần 1
               </button>
               <button
-                class="btn btn-secondary m-r-5 m-b-5"
-                @click="handleSubmit"
+              v-if="itemid.approved==1"
+                class="btn btn-primary float-right m-r-5 m-b-5"
+                @click="handleBrowse2"
               >
-                Để sau
+                Duyệt lần 2
+              </button>
+              <button class="btn btn-success m-r-5 m-b-5" v-if="itemid.approved==0" @click="notBrowse">
+                Không duyệt
+              </button>
+              <button class="btn btn-success m-r-5 m-b-5" v-if="itemid.approved==1" @click="cancelBrowse">
+                Hủy duyệt lần 1
               </button>
             </div>
           </div>
@@ -55,8 +60,53 @@ export default {
     };
   },
   methods: {
-    getUrlImage(url) {
-      return `${BASE_URL}/${url}`;
+    handleBrowse1() {
+      this.$http
+        .get(`${BASE_URL}/business/browse-GPKD1/${this.itemid._id}`, {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          this.itemid.approved = 1;
+          this.$emit("close");
+        })
+        .catch(function (error) {
+          console.error(error.response);
+        });
+    },
+    handleBrowse2() {
+      this.$http
+        .get(`${BASE_URL}/business/browse-GPKD2/${this.itemid._id}`, {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          this.itemid.approved = 2;
+          this.$emit("close");
+        })
+        .catch(function (error) {
+          console.error(error.response);
+        });
+    },
+    cancelBrowse() {
+      this.$http
+        .get(`${BASE_URL}/business/cancel-browse-GPKD/${this.itemid._id}`, {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          this.itemid.approved = 0;
+          this.$emit("close");
+        })
+        .catch(function (error) {
+          console.error(error.response);
+        });
+    },
+    notBrowse() {
+      this.itemid.approved = -1;
     },
     handleSubmit() {
       //   if (this.cvid.username.length > 6) {

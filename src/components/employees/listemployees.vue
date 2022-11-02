@@ -56,6 +56,7 @@
             <b
               >{{ displayCvidStatus(item.approved) }}
               <b-icon
+              v-if="item.point != -1"
                 icon="newspaper"
                 variant="primary"
                 style="float: right"
@@ -65,6 +66,14 @@
           </template>
           <template v-slot:cell(job.status)="{ item }">
             <b>{{ item.job ? displayJobStatus(item.job.status) : "" }}</b>
+          </template>
+          <template v-slot:cell(actions)="{ item }">
+              <b-icon
+                icon="trash"
+                variant="danger"
+                style="margin: auto"
+                @click="deleteItem(item._id, item.name)"
+              ></b-icon>
           </template>
         </b-table>
         </table>
@@ -242,7 +251,7 @@ export default {
       }
     },
 
-    dellItem(id, name) {
+    deleteItem(id, name) {
       this.$confirm({
         message: "Bạn có muốn xóa " + name,
         button: {
@@ -251,32 +260,22 @@ export default {
         callback: (confirm) => {
           if (confirm) {
             this.$http
-              .post(
-                "api/toquote/delltoquote",
-                {
-                  id: id,
+              .get(`${BASE_URL}/employee/delete/${id}`, {
+                headers: {
+                  Authorization: `Basic ${localStorage.getItem("token")}`,
                 },
-                {
-                  headers: {
-                    Authorization: `Basic ${localStorage.getItem("token")}`,
-                  },
-                }
-              )
+              })
               .then((response) => {
                 this.$http
-                  .get(`${BASE_URL}/employee/getall?page=${this.currentPage}`, {
+                  .get(`${BASE_URL}/employee/getall`, {
                     headers: {
                       Authorization: `Basic ${localStorage.getItem("token")}`,
                     },
                   })
-                  .then((response) => (this.items = response.data));
-                this.$http
-                  .get("api/user/getcountuser", {
-                    headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`,
-                    },
-                  })
-                  .then((response) => (this.totalRows = response.data));
+                  .then((response) => {
+                    this.items = response.data;
+                    this.totalRows = response.data.length;
+                  });
               })
               .catch(function (error) {
                 console.error(error.response);
@@ -292,20 +291,11 @@ export default {
         headers: { Authorization: `Basic ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        this.employees = response.data;
+        this.items = response.data;
         this.totalRows = response.data.length;
         if (this.$route.query.page === undefined) {
           this.currentPage = 1;
         }
-        this.items = this.employees.filter((item, index) => {
-          if (
-            (this.currentPage - 1) * this.perPage <= index &&
-            index < this.currentPage * this.perPage
-          ) {
-            return true;
-          }
-          return false;
-        });
       });
   },
 };
