@@ -8,28 +8,18 @@
               <button
                 aria-label="Dismiss"
                 class="ngdialog-close"
-                @click="$emit('close')"
+                @click="()=>{$emit('close'); notbrowse = false;}"
               ></button>
             </div>
             <h1 class="text-center text-primary">
               CVID: {{ itemid.username }}
             </h1>
-            <h2><input type="checkbox"/> Hồ sơ cá nhân</h2>
-            <p>
-              <span>Họ và tên: </span><span>{{ itemid.name }}</span>
-            </p>
-            <p><span>Ngày sinh: </span><span>{{itemid.birthdate}}</span></p>
-            <p><span>Giới tính</span><span>{{itemid.gender}}</span></p>
-            <p><span>Số điện thoại: </span>{{itemid.username}}<span></span></p>
-            <p><span>Email: </span><span>{{itemid.email}}</span></p>
-            <p><span>Địa chỉ: </span><span>{{itemid.address+', '+itemid.ward+', '+itemid.district+', '+itemid.province}}</span></p>
-            <h2><input type="checkbox"/> Kinh nghiệm làm việc</h2>
-            <h2><input type="checkbox"/> Quá trình học tập</h2>
-            <h2><input type="checkbox"/> Các khoá đào tạo ngắn hạn</h2>
-            <h2> Khả năng ngoại ngữ và vi tính</h2>
-            <h2> Kỹ năng khác</h2>
-            
-            
+            <div v-if="notbrowse" class="form-inline">
+              <input type="text" v-model="noteCV" class="form-control" />
+              <button class="btn btn-success" @click="handlerNotBrowse">
+                Xác nhận
+              </button>
+            </div>
           </div>
           <div class="panel-body_modal">
             <button
@@ -73,6 +63,8 @@ export default {
   data() {
     return {
       criteria: [],
+      notbrowse: false,
+      noteCV: "",
     };
   },
   methods: {
@@ -85,11 +77,11 @@ export default {
         })
         .then((response) => {
           this.itemid.approved = 1;
-          this.$emit("close");
         })
         .catch(function (error) {
           console.error(error.response);
         });
+      this.$emit("close");
     },
     handleBrowse2() {
       this.$http
@@ -100,11 +92,11 @@ export default {
         })
         .then((response) => {
           this.itemid.approved = 2;
-          this.$emit("close");
         })
         .catch(function (error) {
           console.error(error.response);
         });
+      this.$emit("close");
     },
     cancelBrowse() {
       this.$http
@@ -115,14 +107,35 @@ export default {
         })
         .then((response) => {
           this.itemid.approved = 0;
-          this.$emit("close");
         })
         .catch(function (error) {
           console.error(error.response);
         });
+      this.$emit("close");
     },
     notBrowse() {
-      this.itemid.approved = -1;
+      this.notbrowse = true;
+    },
+    handlerNotBrowse() {
+      this.$http
+        .post(
+          `${BASE_URL}/employee/not-browse-cvid/${this.itemid._id}`,
+          {
+            noteCV: this.noteCV
+          },
+          {
+            headers: {
+              Authorization: `Basic ${localStorage.getItem("token")}`,
+            },
+          }
+        )
+        .then((response) => {
+          this.itemid.approved = -1;
+        })
+        .catch(function (error) {
+          console.error(error.response);
+        });
+        this.notbrowse = false;
       this.$emit("close");
     },
     handleSubmit() {
@@ -163,6 +176,7 @@ export default {
     },
   },
   created() {
+
     this.$http
       .get(`${BASE_URL}/criteria/getall`)
       .then((res) => {

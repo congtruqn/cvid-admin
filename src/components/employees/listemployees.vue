@@ -55,6 +55,7 @@
           <template v-slot:cell(approved)="{ item }">
             <b
               >{{ displayCvidStatus(item.approved) }}
+              <a :href="'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/cvid/'+item._id" target="_blank">
               <b-icon
               v-if="item.point != -1"
                 icon="newspaper"
@@ -62,6 +63,7 @@
                 style="float: right"
                 @click="showisModalViewCv(item)"
               ></b-icon>
+              </a>
             </b>
           </template>
           <template v-slot:cell(job.status)="{ item }">
@@ -95,14 +97,14 @@
         >
         </paginate>
       </div>
-      <viewcv :itemid="cvid" v-show="isModalViewCv" @close="closeModalViewCv" />
+      <viewcv :itemid="itemid" v-show="isModalViewCv" @close="closeModalViewCv" />
       <adduser
         @inputData="updateMessage"
         v-show="isModalVisible"
         @close="closeModal"
       />
       <edituser
-        :editid="editid"
+        :itemid="itemid"
         v-show="isModalEditVisible"
         @close="closeEditModal"
       />
@@ -115,10 +117,11 @@ import adduser from "@/components/employees/adduser";
 import edituser from "@/components/employees/edituser";
 import viewcv from "@/components/employees/viewcv";
 import Multiselect from "vue-multiselect";
-const { BASE_URL } = require("../../utils/config");
+const { BASE_URL, FRONT_URL } = require("../../utils/config");
 export default {
   data() {
     return {
+      url: FRONT_URL,
       filter: null,
       isModalVisible: false,
       isModalEditVisible: false,
@@ -130,8 +133,7 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
-      editid: "",
-      cvid: "",
+      itemid: "",
       options: [
         {
           key: "approved",
@@ -181,11 +183,11 @@ export default {
       this.isModalVisible = true;
     },
     showisModalEditVisible(id) {
-      this.editid = id;
+      this.itemid = id;
       this.isModalEditVisible = true;
     },
     showisModalViewCv(id) {
-      this.cvid = id;
+      this.itemid = id;
       this.isModalViewCv = true;
     },
     closeModal() {
