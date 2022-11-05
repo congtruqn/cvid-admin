@@ -55,13 +55,12 @@
           <template v-slot:cell(approved)="{ item }">
             <b
               >{{ displayCvidStatus(item.approved) }}
-              <a :href="'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/cvid/'+item._id" target="_blank">
+              <a :href="'http://localhost:8081/cvid/'+item._id+encodedURL" target="_blank">
               <b-icon
               v-if="item.point != -1"
                 icon="newspaper"
                 variant="primary"
                 style="float: right"
-                @click="showisModalViewCv(item)"
               ></b-icon>
               </a>
             </b>
@@ -117,11 +116,11 @@ import adduser from "@/components/employees/adduser";
 import edituser from "@/components/employees/edituser";
 import viewcv from "@/components/employees/viewcv";
 import Multiselect from "vue-multiselect";
-const { BASE_URL, FRONT_URL } = require("../../utils/config");
+const { BASE_URL } = require("../../utils/config");
 export default {
   data() {
     return {
-      url: FRONT_URL,
+      encodedURL: `?token=${encodeURIComponent(localStorage.getItem('token'))}`,
       filter: null,
       isModalVisible: false,
       isModalEditVisible: false,
