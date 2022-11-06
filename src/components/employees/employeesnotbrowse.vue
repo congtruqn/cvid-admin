@@ -311,7 +311,7 @@ export default {
         headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then((response) => {
-        this.items = response.data.filter(cv => cv.approved != -1)
+        this.items = response.data.filter(cv => cv.approved == -1)
         this.totalRows = response.data.length
         if (this.$route.query.page === undefined) {
           this.currentPage = 1

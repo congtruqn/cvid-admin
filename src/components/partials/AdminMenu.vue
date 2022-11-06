@@ -22,6 +22,7 @@
         </a>
         <ul class="sub-menu">
           <li><a href="/employees">Quản lý người tìm việc</a></li>
+          <li><a href="/employees/notbrowse">Danh sách CV không được duyệt</a></li>
           <li><a href="/businesses">Quản lý nhà tuyển dụng</a></li>
           <li><a href="/administrator/listuseraction">Quản lí tác vụ</a></li>
           <li><a href="/administrator/listgroupuser">Quản lí Nhóm Quyền</a></li>

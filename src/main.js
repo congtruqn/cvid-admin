@@ -7,12 +7,17 @@ import router from './router'
 import Axios from 'axios'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
-import './assets/css/style.min.css';
-import './assets/css/form.css';
-import './assets/css/bootstrap.min.css';
-import './assets/css/font-awesome.min.css';
-import './assets/css/auth.css';
-import 'vue-multiselect/dist/vue-multiselect.min.css';
+import './assets/css/style.min.css'
+import './assets/css/form.css'
+import './assets/css/bootstrap.min.css'
+import './assets/css/font-awesome.min.css'
+import './assets/css/auth.css'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+import VueConfirmDialog from 'vue-confirm-dialog'
+import Autocomplete from 'v-autocomplete'
+import 'v-autocomplete/dist/v-autocomplete.css'
+import Multiselect from 'vue-multiselect'
+import excel from 'vue-excel-export'
 
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
@@ -24,14 +29,9 @@ Vue.use(IconsPlugin)
 
 var Paginate = require('vuejs-paginate')
 Vue.component('paginate', Paginate)
-import VueConfirmDialog from 'vue-confirm-dialog'
 Vue.use(VueConfirmDialog)
 Vue.component('vue-confirm-dialog', VueConfirmDialog.default)
-Axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-import Autocomplete from 'v-autocomplete'
-import 'v-autocomplete/dist/v-autocomplete.css'
-import Multiselect from 'vue-multiselect'
-import excel from 'vue-excel-export'
+Axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 Vue.component('multiselect', Multiselect)
 Vue.use(Autocomplete)
 Vue.use(excel)

@@ -19,8 +19,8 @@ let router = new Router({
       name: 'login',
       component: () => import('@/components/Login'),
       meta: {
-          guest: true,
-          layout: 'Auth'
+        guest: true,
+        layout: 'Auth'
       }
     },
     {
@@ -78,6 +78,16 @@ let router = new Router({
       }
     },
     {
+      path: '/employees/notbrowse',
+      name: 'employee-not-browse',
+      component: () => import('@/components/employees/employeesnotbrowse'),
+      meta: {
+        requiresAuth: true,
+        layout: 'Default'
+      }
+    },
+
+    {
       path: '/businesses',
       name: 'businesses',
       component: () => import('@/components/businesses/listbusinesses'),
@@ -130,39 +140,37 @@ let router = new Router({
         requiresAuth: true,
         layout: 'Default'
       }
-    },
-    
+    }
+
   ]
 })
 router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth)) {
-      if (localStorage.getItem('token') == null) {
-          next({
-              path: '/login',
-              params: { nextUrl: to.fullPath }
-          })
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (localStorage.getItem('token') == null) {
+      next({
+        path: '/login',
+        params: { nextUrl: to.fullPath }
+      })
+    } else {
+      let user = JSON.parse(localStorage.getItem('user'))
+      if (to.matched.some(record => record.meta.is_admin)) {
+        if (user.type == 1) {
+          next()
+        } else {
+          next({ name: 'ViewInvoic' })
+        }
       } else {
-          let user = JSON.parse(localStorage.getItem('user'))
-          if(to.matched.some(record => record.meta.is_admin)) {
-              if(user.type == 1){
-                  next()
-              }
-              else{
-                  next({ name: 'ViewInvoic'})
-              }
-          }else {
-              next()
-          }
+        next()
       }
-  } else if(to.matched.some(record => record.meta.guest)) {
-      if(localStorage.getItem('token') == null){
-          next()
-      }
-      else{
-          next()
-      }
-  }else {
+    }
+  } else if (to.matched.some(record => record.meta.guest)) {
+    if (localStorage.getItem('token') == null) {
       next()
+    } else {
+      next()
+    }
+  } else {
+    next()
   }
 })
 export default router
