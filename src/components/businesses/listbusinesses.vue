@@ -73,6 +73,16 @@
                 @click="deleteItem(item._id, item.name)"
               ></b-icon>
           </template>
+          <template v-slot:cell(department)="{ item }">
+              <b>Xem phòng ban
+              <b-icon
+                icon="eye"
+                variant="success"
+                style="float: right"
+               
+              ></b-icon>
+              </b>
+          </template>
         </b-table>
       </div>
       <div
@@ -160,12 +170,12 @@ export default {
           sortable: true,
           thClass: "text-center",
         },
-        // {
-        //   key: "approved",
-        //   label: "Trạng thái Cvid",
-        //   sortable: true,
-        //   thClass: "text-center",
-        // },
+        {
+          key: "department",
+          label: "Phòng ban",
+          sortable: true,
+          thClass: "text-center",
+        },
         // {
         //   key: "job.status",
         //   label: "Trạng thái tìm việc",

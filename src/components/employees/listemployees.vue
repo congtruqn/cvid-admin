@@ -55,7 +55,7 @@
           <template v-slot:cell(approved)="{ item }">
             <b
               >{{ displayCvidStatus(item.approved) }}
-              <a :href="'http://localhost:8081/cvid/'+item._id+encodedURL" target="_blank">
+              <a :href="'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/cvid/'+item._id+encodedURL" target="_blank">
               <b-icon
               v-if="item.point != -1"
                 icon="newspaper"
@@ -164,6 +164,12 @@ export default {
         {
           key: "job.status",
           label: "Trạng thái tìm việc",
+          sortable: true,
+          thClass: "text-center",
+        },
+        {
+          key: "job",
+          label: "Công việc mong muốn",
           sortable: true,
           thClass: "text-center",
         },
