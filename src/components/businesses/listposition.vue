@@ -214,7 +214,25 @@ export default {
         },
         {
           key: 'asss',
-          label: 'Thời gian duyệt',
+          label: 'Thời gian duyệt 1',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        {
+          key: 'asdhsjss',
+          label: 'Thời gian duyệt 2',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        {
+          key: 'asllss',
+          label: 'Người duyệt 1',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        {
+          key: 'asll9ss',
+          label: 'Người duyệt 2',
           sortable: true,
           thClass: 'text-center'
         },
