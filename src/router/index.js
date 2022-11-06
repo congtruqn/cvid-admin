@@ -97,6 +97,15 @@ let router = new Router({
       }
     },
     {
+        path: '/businesses/position',
+        name: 'businesses',
+        component: () => import('@/components/businesses/listposition'),
+        meta: {
+          requiresAuth: true,
+          layout: 'Default'
+        }
+      },
+    {
       path: '/suppliertoquotedetail',
       name: 'suppliertoquotedetail',
       component: () => import('@/components/toquote/suppliertoquotedetail'),
