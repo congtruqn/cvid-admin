@@ -22,14 +22,14 @@
               <img class="imgGPKD" :src="itemid.urlGPKD" />
               <div class="panel-body_modal">
                 <button
-                  v-if="itemid.approved < 1"
+                  v-if="itemid.confirm1.status == 0"
                   class="btn btn-primary float-right m-r-5 m-b-5"
                   @click="handleBrowse1"
                 >
                   Duyệt lần 1
                 </button>
                 <button
-                  v-if="itemid.approved == 1"
+                  v-if="itemid.confirm1.status == 1 && itemid.confirm2.status == 0"
                   class="btn btn-primary float-right m-r-5 m-b-5"
                   @click="handleBrowse2"
                 >
@@ -37,14 +37,14 @@
                 </button>
                 <button
                   class="btn btn-success m-r-5 m-b-5"
-                  v-if="itemid.approved == 0"
+                  v-if="itemid.confirm1.status == 0"
                   @click="notBrowse"
                 >
                   Không duyệt
                 </button>
                 <button
                   class="btn btn-success m-r-5 m-b-5"
-                  v-if="itemid.approved == 1"
+                  v-if="itemid.confirm1.status == 1 && itemid.confirm2.status == 0"
                   @click="cancelBrowse"
                 >
                   Hủy duyệt lần 1
@@ -58,60 +58,84 @@
   </transition>
 </template>
 <script>
-const { BASE_URL } = require("../../utils/config");
+const { BASE_URL } = require('../../utils/config')
 export default {
-  name: "viewGPKD",
-  data() {},
+  name: 'viewGPKD',
+  data () {
+    return {
+      admin: JSON.parse(localStorage.getItem('user'))
+    }
+  },
   methods: {
-    handleBrowse1() {
+    handleBrowse1 () {
       this.$http
-        .get(`${BASE_URL}/business/browse-GPKD1/${this.itemid._id}`, {
+        .get(`${BASE_URL}/business/confirm1/${this.itemid._id}`, {
           headers: {
-            Authorization: `Basic ${localStorage.getItem("token")}`
+            Authorization: `Basic ${localStorage.getItem('token')}`
           }
         })
         .then(response => {
-          this.itemid.approved = 1;
-          this.$emit("close");
+          this.itemid.confirm1.status = 1
+          this.itemid.confirm1.confirmAt = new Date()
+          this.itemid.confirm1.confirmBy = this.admin.name
+          this.$emit('close')
         })
-        .catch(function(error) {
-          console.error(error.response);
-        });
+        .catch(function (error) {
+          console.error(error.response)
+        })
     },
-    handleBrowse2() {
+    handleBrowse2 () {
       this.$http
-        .get(`${BASE_URL}/business/browse-GPKD2/${this.itemid._id}`, {
+        .get(`${BASE_URL}/business/confirm2/${this.itemid._id}`, {
           headers: {
-            Authorization: `Basic ${localStorage.getItem("token")}`
+            Authorization: `Basic ${localStorage.getItem('token')}`
           }
         })
         .then(response => {
-          this.itemid.approved = 2;
-          this.$emit("close");
+          this.itemid.confirm2.status = 1
+          this.itemid.confirm2.confirmAt = new Date()
+          this.itemid.confirm2.confirmBy = this.admin.name
+          this.$emit('close')
         })
-        .catch(function(error) {
-          console.error(error.response);
-        });
+        .catch(function (error) {
+          console.error(error.response)
+        })
     },
-    cancelBrowse() {
+    cancelBrowse () {
       this.$http
-        .get(`${BASE_URL}/business/cancel-browse-GPKD/${this.itemid._id}`, {
+        .get(`${BASE_URL}/business/cancel-confirm/${this.itemid._id}`, {
           headers: {
-            Authorization: `Basic ${localStorage.getItem("token")}`
+            Authorization: `Basic ${localStorage.getItem('token')}`
           }
         })
         .then(response => {
-          this.itemid.approved = 0;
-          this.$emit("close");
+          this.itemid.confirm1.status = 0
+          this.itemid.confirm1.confirmAt = new Date()
+          this.itemid.confirm1.confirmBy = this.admin.name
+          this.$emit('close')
         })
-        .catch(function(error) {
-          console.error(error.response);
-        });
+        .catch(function (error) {
+          console.error(error.response)
+        })
     },
-    notBrowse() {
-      this.itemid.approved = -1;
+    notBrowse () {
+      this.$http
+        .get(`${BASE_URL}/business/not-confirm/${this.itemid._id}`, {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem('token')}`
+          }
+        })
+        .then(response => {
+          this.itemid.confirm1.status = -1
+          this.itemid.confirm1.confirmAt = new Date()
+          this.itemid.confirm1.confirmBy = this.admin.name
+          this.$emit('close')
+        })
+        .catch(function (error) {
+          console.error(error.response)
+        })
     },
-    handleSubmit() {
+    handleSubmit () {
       //   if (this.cvid.username.length > 6) {
       //     if (this.password === this.repassword) {
       //       this.$http
@@ -148,8 +172,8 @@ export default {
       //   }
     }
   },
-  props: ["itemid"]
-};
+  props: ['itemid']
+}
 </script>
 <style scoped>
 .imgGPKD {
