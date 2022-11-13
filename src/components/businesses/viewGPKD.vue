@@ -22,7 +22,7 @@
               <img class="imgGPKD" :src="itemid.urlGPKD" />
               <div class="panel-body_modal">
                 <button
-                  v-if="itemid.confirm1.status == 0"
+                  v-if="itemid.confirm1 && itemid.confirm1.status == 0"
                   class="btn btn-primary float-right m-r-5 m-b-5"
                   @click="handleBrowse1"
                 >
@@ -134,42 +134,6 @@ export default {
         .catch(function (error) {
           console.error(error.response)
         })
-    },
-    handleSubmit () {
-      //   if (this.cvid.username.length > 6) {
-      //     if (this.password === this.repassword) {
-      //       this.$http
-      //         .post(
-      //           "api/user/edituser",
-      //           {
-      //             name: this.cvid.name,
-      //             username: this.cvid.username,
-      //             password: this.password,
-      //             email: this.cvid.email,
-      //             phone: this.cvid.phone,
-      //             address: this.cvid.address,
-      //             type: this.cvid.type,
-      //             status: this.cvid.status,
-      //             id: this.cvid._id,
-      //           },
-      //           {
-      //             headers: {
-      //               Authorization: `Basic ${localStorage.getItem("token")}`,
-      //             },
-      //           }
-      //         )
-      //         .then((response) => {
-      //           this.$emit("close");
-      //         })
-      //         .catch(function (error) {
-      //           console.error(error.response);
-      //         });
-      //     } else {
-      //       alert("Mật khẩu phải giống nhau!");
-      //     }
-      //   } else {
-      //     alert("Tên đăng nhập quá ngắn!");
-      //   }
     }
   },
   props: ['itemid']

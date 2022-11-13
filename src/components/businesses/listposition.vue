@@ -50,44 +50,98 @@
           :fields="fields"
           :filter="filter"
         >
-          <template v-slot:cell(approved)="{ item }">
-            <b
-              >{{ displayGPKDStatus(item.approved) }}
-              <b-icon
-                icon="newspaper"
-                variant="primary"
-                style="float: right"
-                @click="showModalViewGPKD(item)"
-              ></b-icon>
-            </b>
+          <template v-slot:cell(updateAt)="{ item }">
+            {{new Date(item.updateAt).toLocaleString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric"
+                })}}
           </template>
           <template v-slot:cell(status)="{ item }">
             <b>{{ displayPositionStatus(item.status) }}</b>
           </template>
 
-          <template v-slot:cell(approved1)="{ item }">
-              <a
-                :href="
-                  'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
-                    item._id
-                "
-                target="_blank"
-              >
-               Thời gian: </br>
-               Người duyệt
-              </a>        
+          <template v-slot:cell(confirm1)="{ item }">
+            <a
+              v-if="item.confirm1 && item.confirm1.status == 0"
+              :href="
+                'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
+                  item._id
+              "
+              target="_blank"
+              >Đang chờ duyệt
+              </a
+            >
+            <a
+              v-else-if="item.confirm1 && item.confirm1.status == -1"
+              >Trạng thái: Yêu cầu chỉnh sửa</br>
+              Thời gian:
+              {{
+                new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric"
+                })
+              }}<br />
+              Người duyệt: {{ item.confirm1.confirmBy }}</a
+            >
+            <a
+              v-else
+              :href="
+                'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
+                  item._id
+              "
+              target="_blank"
+            >
+            Trạng thái: Đã duyệt</br>
+              Thời gian:
+              {{
+                new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric"
+                })
+              }}<br />
+              Người duyệt: {{ item.confirm1.confirmBy }}
+            </a>
           </template>
-          <template v-slot:cell(approved2)="{ item }">
-              <a
-                :href="
-                  'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
-                    item._id
-                "
-                target="_blank"
-              >
-               Thời gian: </br>
-               Người duyệt
-              </a>        
+          <template v-slot:cell(confirm2)="{ item }">
+            <a
+              v-if="item.confirm2 && item.confirm2.status == 0"
+              :href="
+                'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
+                  item._id
+              "
+              target="_blank"
+              >Đang chờ duyệt</a
+            >
+            <a
+            v-else
+              :href="
+                'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
+                  item._id
+              "
+              target="_blank"
+            >
+            Trạng thái: Đã duyệt</br>
+              Thời gian:
+              {{
+                new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric"
+                })
+              }}<br />
+              Người duyệt: {{ item.confirm2.confirmBy }}
+            </a>
           </template>
 
           <template v-slot:cell(questions)="{ item }">
@@ -100,7 +154,7 @@
               ></b-icon>
             </b>
           </template>
-          <template v-slot:cell(questions)="{ app }">
+          <template v-slot:cell(questions)="{ item }">
             <b
               >Xem tiêu chí
               <b-icon
@@ -222,19 +276,19 @@ export default {
         //   thClass: 'text-center'
         // },
         {
-          key: "asas",
+          key: "updateAt",
           label: "Thời gian cập nhật",
           sortable: true,
           thClass: "text-center"
         },
         {
-          key: "approved1",
+          key: "confirm1",
           label: "Duyệt lần 1",
           sortable: true,
           thClass: "text-center"
         },
         {
-          key: "approved2",
+          key: "confirm2",
           label: "Duyệt lần 2",
           sortable: true,
           thClass: "text-center"

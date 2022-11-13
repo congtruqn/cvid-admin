@@ -74,8 +74,21 @@
           </template>
           <template v-slot:cell(confirm1)="{ item }">
             <a v-if="item.confirm1.status == 0" @click="showModalViewGPKD(item)">Đang chờ duyệt</a>
+            <a v-else-if="item.confirm1.status == -1" disabled>
+              Trạng thái: Yêu cầu chỉnh sửa</br>
+              Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+              }) }}<br />
+              Người duyệt: {{ item.confirm1.confirmBy }}
+            </a>
             <a v-else @click="showModalViewGPKD(item)"
-              >Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+              >
+              Trạng thái: Đã duyệt </br>
+              Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
                 hour: '2-digit',
                 minute: '2-digit',
                 year: "numeric",
@@ -88,7 +101,9 @@
           <template v-slot:cell(confirm2)="{ item }">
             <a v-if="item.confirm2.status == 0" @click="showModalViewGPKD(item)">Đang chờ duyệt</a>
             <a v-else @click="showModalViewGPKD(item)"
-              >Thời gian: {{ new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
+              >
+              Trạng thái: Đã duyệt </br>
+              Thời gian: {{ new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
                 hour: '2-digit',
                 minute: '2-digit',
                 year: "numeric",
