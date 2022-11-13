@@ -1,4 +1,4 @@
-
+<!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div>
     <section class="content-header">
@@ -51,37 +51,48 @@
           :fields="fields"
           :filter="filter"
         >
-          <template v-slot:cell(approved)="{ item }">
+          <!-- <template v-slot:cell(approved)="{ item }">
             <b
               >{{ displayGPKDStatus(item.approved) }}
               <b-icon
                 icon="newspaper"
                 variant="primary"
                 style="float: right"
-                @click="showModalViewGPKD(item)"
               ></b-icon>
             </b>
-          </template>
-          <!-- <template v-slot:cell(job.status)="{ item }">
-            <b>{{ item.job ? displayJobStatus(item.job.status) : "" }}</b>
           </template> -->
-           <template v-slot:cell(actions)="{ item }">
-              <b-icon
-                icon="trash"
-                variant="danger"
-                style="margin: auto"
-                @click="deleteItem(item._id, item.name)"
-              ></b-icon>
+          <template v-slot:cell(createAt)="{ item }">
+            {{
+              new Date(item.createAt).toLocaleString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+              })
+            }}
           </template>
-          <template v-slot:cell(department)="{ item }">
-              <b>Xem phòng ban
-              <b-icon
-                icon="eye"
-                variant="success"
-                style="float: right"
-               
-              ></b-icon>
-              </b>
+          <template v-slot:cell(confirm1)="{ item }">
+            <a v-if="item.confirm1.status == 0" @click="showModalViewGPKD(item)">Đang chờ duyệt</a>
+            <a v-else @click="showModalViewGPKD(item)"
+              >Thời gian: {{ item.confirm1.confirmAt }}<br />
+              Người duyệt: {{ item.confirm1.confirmBy }}
+            </a>
+          </template>
+          <template v-slot:cell(confirm2)="{ item }">
+            <a v-if="item.confirm1.status == 0" @click="showModalViewGPKD(item)">Đang chờ duyệt</a>
+            <a v-else @click="showModalViewGPKD(item)"
+              >Thời gian: {{ item.confirm2.confirmAt }}<br />
+              Người duyệt: {{ item.confirm2.confirmBy }}
+            </a>
+          </template>
+          <template v-slot:cell(actions)="{ item }">
+            <b-icon
+              icon="trash"
+              variant="danger"
+              style="margin: auto"
+              @click="deleteItem(item._id, item.name)"
+            ></b-icon>
           </template>
         </b-table>
       </div>
@@ -143,54 +154,48 @@ export default {
       page: Number(this.$route.query.page),
       itemid: "",
       options: [
-        {
-          key: "approved",
-          label: "Giấy phép kinh doanh",
-          sortable: true,
-          thClass: "text-center",
-        },
         // {
         //   key: "job.status",
         //   label: "Trạng thái tìm việc",
         //   sortable: true,
         //   thClass: "text-center",
         // },
-        { key: "actions", label: "Thao tác", sortable: false },
+        { key: "actions", label: "Thao tác", sortable: false }
       ],
       fields: [
         {
           key: "name",
           label: "Tên công ty",
           sortable: true,
-          $isDisabled: true,
+          $isDisabled: true
         },
         {
-          key: "approved",
-          label: "Giấy phép kinh doanh",
+          key: "createAt",
+          label: "Thời gian đăng kí",
           sortable: true,
-          thClass: "text-center",
+          thClass: "text-center"
         },
         {
-          key: "department",
-          label: "Phòng ban",
+          key: "confirm1",
+          label: "Duyệt lần 1",
           sortable: true,
-          thClass: "text-center",
+          thClass: "text-center"
         },
-        // {
-        //   key: "job.status",
-        //   label: "Trạng thái tìm việc",
-        //   sortable: true,
-        //   thClass: "text-center",
-        // },
-        { key: "actions", label: "Thao tác", sortable: false },
-      ],
+        {
+          key: "confirm2",
+          label: "Duyệt lần 2",
+          sortable: true,
+          thClass: "text-center"
+        },
+        { key: "actions", label: "Thao tác", sortable: false }
+      ]
     };
   },
   components: {
     adduser,
     edituser,
     viewGPKD,
-    Multiselect,
+    Multiselect
   },
   methods: {
     showModal() {
@@ -207,7 +212,7 @@ export default {
     closeModalViewGPKD() {
       this.isModalViewGPKD = false;
     },
-    
+
     closeModal() {
       this.isModalVisible = false;
     },
@@ -238,13 +243,13 @@ export default {
           return "Đã được duyệt";
       }
     },
-    
+
     clickCallback(pageNum) {
       this.$http
         .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
-          headers: { Authorization: `Basic ${localStorage.getItem("token")}` },
+          headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
         })
-        .then((response) => (this.items = response.data));
+        .then(response => (this.items = response.data));
     },
     updateMessage(variable) {
       this.items = variable;
@@ -253,56 +258,56 @@ export default {
       this.$confirm({
         message: "Bạn có muốn xóa " + name,
         button: {
-          yes: "Đồng ý",
+          yes: "Đồng ý"
         },
-        callback: (confirm) => {
+        callback: confirm => {
           if (confirm) {
             this.$http
               .get(
                 `${BASE_URL}/business/delete/${id}`,
-     
+
                 {
                   headers: {
-                    Authorization: `Basic ${localStorage.getItem("token")}`,
-                  },
+                    Authorization: `Basic ${localStorage.getItem("token")}`
+                  }
                 }
               )
-              .then((response) => {
+              .then(response => {
                 this.$http
                   .get(`${BASE_URL}/business/getall`, {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`,
-                    },
+                      Authorization: `Basic ${localStorage.getItem("token")}`
+                    }
                   })
-                  .then((response) => (this.items = response.data));
+                  .then(response => (this.items = response.data));
                 this.$http
                   .get("api/user/getcountuser", {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`,
-                    },
+                      Authorization: `Basic ${localStorage.getItem("token")}`
+                    }
                   })
-                  .then((response) => (this.totalRows = response.data));
+                  .then(response => (this.totalRows = response.data));
               })
-              .catch(function (error) {
+              .catch(function(error) {
                 console.error(error.response);
               });
           }
-        },
+        }
       });
-    },
+    }
   },
   created() {
     this.$http
       .get(`${BASE_URL}/business/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
       })
-      .then((response) => {
+      .then(response => {
         this.items = response.data;
         this.totalRows = response.data.length;
         if (this.$route.query.page === undefined) {
           this.currentPage = 1;
         }
       });
-  },
+  }
 };
 </script>
