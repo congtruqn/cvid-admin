@@ -142,6 +142,15 @@ let router = new Router({
       }
     },
     {
+      path: '/administrator/listgroupuser',
+      name: 'listgroupuser',
+      component: () => import('@/components/administrator/listgroupuser'),
+      meta: {
+        requiresAuth: true,
+        layout: 'Default'
+      }
+    },
+    {
       path: '/chooseprofit',
       name: 'chooseprofit',
       component: () => import('@/components/toquote/chooseprofit'),
