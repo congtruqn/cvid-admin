@@ -2,27 +2,15 @@
 <template>
   <div>
     <section class="content-header">
-      <h1>Quản lý người tìm việc</h1>
+      <h1>Quản lý CVID</h1>
       <ol class="breadcrumb">
         <li>
           <a><i class="fa fa-dashboard"></i>Trang chủ</a>
         </li>
-        <li><a>Danh sách người tìm việc</a></li>
+        <li><a>Danh sách CVID</a></li>
       </ol>
     </section>
     <section class="panel panel-inverse">
-      <multiselect
-        v-model="fields"
-        :options="options"
-        :multiple="true"
-        :close-on-select="false"
-        :clear-on-select="false"
-        :preserve-search="true"
-        placeholder="Nhập từ khóa"
-        label="label"
-        track-by="key"
-        :preselect-first="true"
-      ></multiselect>
       <div class="row">
         <b-form inline class="m-b-5 m-t-5">
           <b-form-select
@@ -45,29 +33,89 @@
         </b-form>
 
         <b-table
+        :busy="isBusy"
           striped
           bordered
           hover
-        sort-by="approved"
           :items="items"
           :fields="fields"
           :filter="filter"
         >
-          <template v-slot:cell(approved)="{ item }">
-            <b
-              >{{ displayCvidStatus(item.approved) }}
-              <a :href="'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/cvid/'+item._id+encodedURL" target="_blank">
-              <b-icon
-              v-if="item.point != -1"
-                icon="newspaper"
-                variant="primary"
-                style="float: right"
-              ></b-icon>
+        <template #table-busy>
+        <div class="text-center text-danger my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong>Loading...</strong>
+        </div>
+      </template>
+          <template v-slot:cell(viewcv)="{ item }">
+            <b> 
+              <a :href="'https://cvidpro.net/cvid/'+item._id+encodedURL" target="_blank">
+      Xem CV
               </a>
             </b>
           </template>
           <template v-slot:cell(job.status)="{ item }">
             <b>{{ item.job ? displayJobStatus(item.job.status) : "" }}</b>
+          </template>
+          <template v-slot:cell(comfirm1)="{ item }">
+            <td>sxc</td><td>s</td>
+          </template>
+        <template v-slot:cell(confirm1)="{ item }">
+            <a v-if="item.confirm1.status == 0" @click="showModalViewGPKD(item)">Đang chờ duyệt</a>
+            <a v-else-if="item.confirm1.status == -1" disabled>
+              Trạng thái: Yêu cầu chỉnh sửa</br>
+              Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+              }) }}<br />
+              Người duyệt: {{ item.confirm1.confirmBy }}
+            </a>
+            <a v-else @click="showModalViewGPKD(item)"
+              >
+              Trạng thái: Đã duyệt </br>
+              Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+              }) }}<br />
+              Người duyệt: {{ item.confirm1.confirmBy }}
+            </a>
+          </template>
+          <template v-slot:cell(confirm1.status)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
+          </template>
+          <template v-slot:cell(confirm1.confirmAt)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+              }):'' }}
+          </template>
+          <template v-slot:cell(confirm1.confirmBy)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1? item.confirm1.confirmBy :'' }}
+          </template>
+
+          <template v-slot:cell(confirm2.status)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
+          </template>
+          <template v-slot:cell(confirm2.confirmAt)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+              }):'' }}
+          </template>
+          <template v-slot:cell(confirm2.confirmBy)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1? item.confirm2.confirmBy :'' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
               <b-icon
@@ -133,60 +181,81 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
+      isBusy: true,
       itemid: '',
-      options: [
-        {
-          key: 'approved',
-          label: 'Trạng thái Cvid',
-          sortable: true,
-          thClass: 'text-center'
-        },
-        {
-          key: 'job.status',
-          label: 'Trạng thái tìm việc',
-          sortable: true,
-          thClass: 'text-center'
-        },
-        { key: 'actions', label: 'Thao tác', sortable: false }
-      ],
       fields: [
         {
           key: 'name',
           label: 'Họ và tên',
-          sortable: true,
-          $isDisabled: true
+          sortable: true
         },
         {
-          key: 'approved',
-          label: 'Trạng thái Cvid',
+          key: 'viewcv',
+          label: 'Thông tin CV',
+          sortable: true,
+          class: 'text-center'
+        },
+        {
+          key: 'confirm1.status',
+          label: 'Trạng thái duyệt 1',
           sortable: true,
           thClass: 'text-center'
         },
         {
-          key: 'job.status',
-          label: 'Trạng thái tìm việc',
+          key: 'confirm1.confirmAt',
+          label: 'Thời gian duyệt 1',
           sortable: true,
           thClass: 'text-center'
         },
         {
-          key: 'createdAt',
-          label: 'Thời gian cập nhật',
+          key: 'confirm1.confirmBy',
+          label: 'Người duyệt 1',
           sortable: true,
           thClass: 'text-center'
         },
         {
-          key: 'timeBrowse',
-          label: 'Thời gian duyệt CV',
+          key: 'confirm2.status',
+          label: 'Trạng thái duyệt 2',
           sortable: true,
           thClass: 'text-center'
         },
         {
-          key: 'job',
-          label: 'Công việc mong muốn',
+          key: 'confirm2.confirmAt',
+          label: 'Thời gian duyệt 2',
           sortable: true,
           thClass: 'text-center'
         },
-        { key: 'actions', label: 'Thao tác', sortable: false }
+        {
+          key: 'confirm2.confirmBy',
+          label: 'Người duyệt 2',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        // {
+        //   key: 'job.status',
+        //   label: 'Trạng thái tìm việc',
+        //   sortable: true,
+        //   thClass: 'text-center'
+        // },
+        // {
+        //   key: 'createdAt',
+        //   label: 'Thời gian cập nhật',
+        //   sortable: true,
+        //   thClass: 'text-center'
+        // },
+        // {
+        //   key: 'timeBrowse',
+        //   label: 'Thời gian duyệt CV',
+        //   sortable: true,
+        //   thClass: 'text-center'
+        // },
+        // {
+        //   key: 'job',
+        //   label: 'Công việc mong muốn',
+        //   sortable: true,
+        //   thClass: 'text-center'
+        // },
+        // { key: 'actions', label: 'Thao tác', sortable: false }
       ]
     }
   },
@@ -311,8 +380,9 @@ export default {
         headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then((response) => {
-        this.items = response.data.filter(cv => cv.approved != -1)
+        this.items = response.data
         this.totalRows = response.data.length
+        this.isBusy = false
         if (this.$route.query.page === undefined) {
           this.currentPage = 1
         }

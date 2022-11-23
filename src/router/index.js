@@ -33,6 +33,15 @@ let router = new Router({
       }
     },
     {
+      path: '/list-employee',
+      name: 'ListEmployee',
+      component: () => import('@/components/employees/ListEmployee'),
+      meta: {
+        guest: true,
+        layout: 'Default'
+      }
+    },
+    {
       path: '/toquote',
       name: 'listtoquote',
       component: () => import('@/components/toquote/listtoquotes'),
@@ -69,9 +78,9 @@ let router = new Router({
       }
     },
     {
-      path: '/employees',
+      path: '/list-cvid',
       name: 'employees',
-      component: () => import('@/components/employees/listemployees'),
+      component: () => import('@/components/employees/ListCvid'),
       meta: {
         requiresAuth: true,
         layout: 'Default'
@@ -97,14 +106,14 @@ let router = new Router({
       }
     },
     {
-        path: '/businesses/position',
-        name: 'businesses',
-        component: () => import('@/components/businesses/listposition'),
-        meta: {
-          requiresAuth: true,
-          layout: 'Default'
-        }
-      },
+      path: '/businesses/position',
+      name: 'businesses',
+      component: () => import('@/components/businesses/listposition'),
+      meta: {
+        requiresAuth: true,
+        layout: 'Default'
+      }
+    },
     {
       path: '/suppliertoquotedetail',
       name: 'suppliertoquotedetail',
@@ -159,7 +168,6 @@ let router = new Router({
         layout: 'Default'
       }
     }
-
   ]
 })
 router.beforeEach((to, from, next) => {
