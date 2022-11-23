@@ -10,18 +10,6 @@
       </ol>
     </section>
     <section class="panel panel-inverse">
-      <multiselect
-        v-model="fields"
-        :options="options"
-        :multiple="true"
-        :close-on-select="false"
-        :clear-on-select="false"
-        :preserve-search="true"
-        placeholder="Nhập từ khóa"
-        label="label"
-        track-by="key"
-        :preselect-first="true"
-      ></multiselect>
       <div class="row">
         <div class="panel-body">
           <button class="btn btn-primary m-r-5 m-b-5" @click="showModal">
@@ -63,85 +51,36 @@
             <b>{{ displayPositionStatus(item.status) }}</b>
           </template>
 
-          <template v-slot:cell(confirm1)="{ item }">
-            <a
-              v-if="item.confirm1 && item.confirm1.status == 0"
-              :href="
-                'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
-                  item._id
-              "
-              target="_blank"
-              >Đang chờ duyệt
-              </a
-            >
-            <a
-              v-else-if="item.confirm1 && item.confirm1.status == -1"
-              >Trạng thái: Yêu cầu chỉnh sửa</br>
-              Thời gian:
-              {{
-                new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric"
-                })
-              }}<br />
-              Người duyệt: {{ item.confirm1.confirmBy }}</a
-            >
-            <a
-              v-else
-              :href="
-                'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
-                  item._id
-              "
-              target="_blank"
-            >
-            Trạng thái: Đã duyệt</br>
-              Thời gian:
-              {{
-                new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric"
-                })
-              }}<br />
-              Người duyệt: {{ item.confirm1.confirmBy }}
-            </a>
+          <template v-slot:cell(confirm1.status)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
           </template>
-          <template v-slot:cell(confirm2)="{ item }">
-            <a
-              v-if="item.confirm2 && item.confirm2.status == 0"
-              :href="
-                'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
-                  item._id
-              "
-              target="_blank"
-              >Đang chờ duyệt</a
-            >
-            <a
-            v-else
-              :href="
-                'https://staging-dot-farmme-ggczm4ik6q-an.a.run.app/employee/job-detail/' +
-                  item._id
-              "
-              target="_blank"
-            >
-            Trạng thái: Đã duyệt</br>
-              Thời gian:
-              {{
-                new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric"
-                })
-              }}<br />
-              Người duyệt: {{ item.confirm2.confirmBy }}
-            </a>
+          <template v-slot:cell(confirm1.confirmAt)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+              }):'' }}
+          </template>
+          <template v-slot:cell(confirm1.confirmBy)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1? item.confirm1.confirmBy :'' }}
+          </template>
+
+          <template v-slot:cell(confirm2.status)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
+          </template>
+          <template v-slot:cell(confirm2.confirmAt)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+              }):'' }}
+          </template>
+          <template v-slot:cell(confirm2.confirmBy)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1? item.confirm2.confirmBy :'' }}
           </template>
 
           <template v-slot:cell(questions)="{ item }">
@@ -282,16 +221,40 @@ export default {
           thClass: "text-center"
         },
         {
-          key: "confirm1",
-          label: "Duyệt lần 1",
+          key: 'confirm1.status',
+          label: 'Trạng thái duyệt 1',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "confirm2",
-          label: "Duyệt lần 2",
+          key: 'confirm1.confirmAt',
+          label: 'Thời gian duyệt 1',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
+        },
+        {
+          key: 'confirm1.confirmBy',
+          label: 'Người duyệt 1',
+          sortable: true,
+          thClass: 'text-center'
+        },
+       {
+          key: 'confirm2.status',
+          label: 'Trạng thái duyệt 2',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        {
+          key: 'confirm2.confirmAt',
+          label: 'Thời gian duyệt 2',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        {
+          key: 'confirm2.confirmBy',
+          label: 'Người duyệt 2',
+          sortable: true,
+          thClass: 'text-center'
         },
         {
           key: "questions",

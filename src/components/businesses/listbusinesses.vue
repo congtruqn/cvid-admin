@@ -11,18 +11,6 @@
       </ol>
     </section>
     <section class="panel panel-inverse">
-      <multiselect
-        v-model="fields"
-        :options="options"
-        :multiple="true"
-        :close-on-select="false"
-        :clear-on-select="false"
-        :preserve-search="true"
-        placeholder="Nhập từ khóa"
-        label="label"
-        track-by="key"
-        :preselect-first="true"
-      ></multiselect>
       <div class="row">
         <div class="panel-body">
           <button class="btn btn-primary m-r-5 m-b-5" @click="showModal">
@@ -51,67 +39,36 @@
           :fields="fields"
           :filter="filter"
         >
-          <!-- <template v-slot:cell(approved)="{ item }">
-            <b
-              >{{ displayGPKDStatus(item.approved) }}
-              <b-icon
-                icon="newspaper"
-                variant="primary"
-                style="float: right"
-              ></b-icon>
-            </b>
-          </template> -->
-          <template v-slot:cell(createAt)="{ item }">
-            {{
-              new Date(item.createAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              })
-            }}
+        <template v-slot:cell(confirm1.status)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
           </template>
-          <template v-slot:cell(confirm1)="{ item }">
-            <a v-if="item.confirm1.status == 0" @click="showModalViewGPKD(item)">Đang chờ duyệt</a>
-            <a v-else-if="item.confirm1.status == -1" disabled>
-              Trạng thái: Yêu cầu chỉnh sửa</br>
-              Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+          <template v-slot:cell(confirm1.confirmAt)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
                 hour: '2-digit',
                 minute: '2-digit',
                 year: "numeric",
                 month: "short",
                 day: "numeric"
-              }) }}<br />
-              Người duyệt: {{ item.confirm1.confirmBy }}
-            </a>
-            <a v-else @click="showModalViewGPKD(item)"
-              >
-              Trạng thái: Đã duyệt </br>
-              Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }) }}<br />
-              Người duyệt: {{ item.confirm1.confirmBy }}
-            </a>
+              }):'' }}
           </template>
-          <template v-slot:cell(confirm2)="{ item }">
-            <a v-if="item.confirm2.status == 0" @click="showModalViewGPKD(item)">Đang chờ duyệt</a>
-            <a v-else @click="showModalViewGPKD(item)"
-              >
-              Trạng thái: Đã duyệt </br>
-              Thời gian: {{ new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
+          <template v-slot:cell(confirm1.confirmBy)="{ item }">
+           {{item.confirm1 && item.confirm1.status === 1? item.confirm1.confirmBy :'' }}
+          </template>
+
+          <template v-slot:cell(confirm2.status)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
+          </template>
+          <template v-slot:cell(confirm2.confirmAt)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
                 hour: '2-digit',
                 minute: '2-digit',
                 year: "numeric",
                 month: "short",
                 day: "numeric"
-              }) }}<br />
-              Người duyệt: {{ item.confirm2.confirmBy }}
-            </a>
+              }):'' }}
+          </template>
+          <template v-slot:cell(confirm2.confirmBy)="{ item }">
+           {{item.confirm2 && item.confirm2.status === 1? item.confirm2.confirmBy :'' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
             <b-icon
@@ -160,13 +117,13 @@
   </div>
 </template>
 <script>
-import adduser from "@/components/businesses/adduser";
-import edituser from "@/components/businesses/edituser";
-import viewGPKD from "@/components/businesses/viewGPKD";
-import Multiselect from "vue-multiselect";
-const { BASE_URL } = require("../../utils/config");
+import adduser from '@/components/businesses/adduser'
+import edituser from '@/components/businesses/edituser'
+import viewGPKD from '@/components/businesses/viewGPKD'
+import Multiselect from 'vue-multiselect'
+const { BASE_URL } = require('../../utils/config')
 export default {
-  data() {
+  data () {
     return {
       filter: null,
       isModalVisible: false,
@@ -179,44 +136,59 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
-      itemid: "",
-      options: [
-        // {
-        //   key: "job.status",
-        //   label: "Trạng thái tìm việc",
-        //   sortable: true,
-        //   thClass: "text-center",
-        // },
-        { key: "actions", label: "Thao tác", sortable: false }
-      ],
+      itemid: '',
       fields: [
         {
-          key: "name",
-          label: "Tên công ty",
+          key: 'name',
+          label: 'Tên công ty',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "createAt",
-          label: "Thời gian đăng kí",
+          key: 'createAt',
+          label: 'Thời gian đăng kí',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "confirm1",
-          label: "Duyệt lần 1",
+          key: 'confirm1.status',
+          label: 'Trạng thái duyệt 1',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "confirm2",
-          label: "Duyệt lần 2",
+          key: 'confirm1.confirmAt',
+          label: 'Thời gian duyệt 1',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
-        { key: "actions", label: "Thao tác", sortable: false }
+        {
+          key: 'confirm1.confirmBy',
+          label: 'Người duyệt 1',
+          sortable: true,
+          thClass: 'text-center'
+        },
+       {
+          key: 'confirm2.status',
+          label: 'Trạng thái duyệt 2',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        {
+          key: 'confirm2.confirmAt',
+          label: 'Thời gian duyệt 2',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        {
+          key: 'confirm2.confirmBy',
+          label: 'Người duyệt 2',
+          sortable: true,
+          thClass: 'text-center'
+        },
+        { key: 'actions', label: 'Thao tác', sortable: false }
       ]
-    };
+    }
   },
   components: {
     adduser,
@@ -225,67 +197,67 @@ export default {
     Multiselect
   },
   methods: {
-    showModal() {
-      this.isModalVisible = true;
+    showModal () {
+      this.isModalVisible = true
     },
-    showisModalEditVisible(id) {
-      this.itemid = id;
-      this.isModalEditVisible = true;
+    showisModalEditVisible (id) {
+      this.itemid = id
+      this.isModalEditVisible = true
     },
-    showModalViewGPKD(id) {
-      this.itemid = id;
-      this.isModalViewGPKD = true;
+    showModalViewGPKD (id) {
+      this.itemid = id
+      this.isModalViewGPKD = true
     },
-    closeModalViewGPKD() {
-      this.isModalViewGPKD = false;
+    closeModalViewGPKD () {
+      this.isModalViewGPKD = false
     },
 
-    closeModal() {
-      this.isModalVisible = false;
+    closeModal () {
+      this.isModalVisible = false
     },
-    closeEditModal() {
-      this.isModalEditVisible = false;
+    closeEditModal () {
+      this.isModalEditVisible = false
     },
-    displayUserType(id) {
+    displayUserType (id) {
       switch (id) {
         case 1:
-          return "Quản trị viên";
-          break;
+          return 'Quản trị viên'
+          break
         case 2:
-          return "Người quản lý";
-          break;
+          return 'Người quản lý'
+          break
         default:
-          return "Nhân viên";
+          return 'Nhân viên'
       }
     },
-    displayGPKDStatus(id) {
+    displayGPKDStatus (id) {
       switch (id) {
         case -1:
-          return "Không đủ điều kiện";
-          break;
+          return 'Không đủ điều kiện'
+          break
         case 0:
-          return "Đang chờ duyệt";
-          break;
+          return 'Đang chờ duyệt'
+          break
         case 1:
-          return "Đã được duyệt";
+          return 'Đã được duyệt'
       }
     },
 
-    clickCallback(pageNum) {
+    clickCallback (pageNum) {
       this.$http
         .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
-          headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
+          headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
         })
-        .then(response => (this.items = response.data));
+        .then(response => (this.items = response.data))
     },
-    updateMessage(variable) {
-      this.items = variable;
+    updateMessage (variable) {
+      this.items = variable
     },
-    deleteItem(id, name) {
+    deleteItem (id, name) {
       this.$confirm({
-        message: "Bạn có muốn xóa " + name,
+        message: 'Bạn có muốn xóa ' + name,
         button: {
-          yes: "Đồng ý"
+          yes: 'Đồng ý'
         },
         callback: confirm => {
           if (confirm) {
@@ -295,7 +267,7 @@ export default {
 
                 {
                   headers: {
-                    Authorization: `Basic ${localStorage.getItem("token")}`
+                    Authorization: `Basic ${localStorage.getItem('token')}`
                   }
                 }
               )
@@ -303,38 +275,38 @@ export default {
                 this.$http
                   .get(`${BASE_URL}/business/getall`, {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`
+                      Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
-                  .then(response => (this.items = response.data));
+                  .then(response => (this.items = response.data))
                 this.$http
-                  .get("api/user/getcountuser", {
+                  .get('api/user/getcountuser', {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`
+                      Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
-                  .then(response => (this.totalRows = response.data));
+                  .then(response => (this.totalRows = response.data))
               })
-              .catch(function(error) {
-                console.error(error.response);
-              });
+              .catch(function (error) {
+                console.error(error.response)
+              })
           }
         }
-      });
+      })
     }
   },
-  created() {
+  created () {
     this.$http
       .get(`${BASE_URL}/business/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
+        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then(response => {
-        this.items = response.data;
-        this.totalRows = response.data.length;
+        this.items = response.data
+        this.totalRows = response.data.length
         if (this.$route.query.page === undefined) {
-          this.currentPage = 1;
+          this.currentPage = 1
         }
-      });
+      })
   }
-};
+}
 </script>
