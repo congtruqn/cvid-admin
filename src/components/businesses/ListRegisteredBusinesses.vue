@@ -39,36 +39,8 @@
           :fields="fields"
           :filter="filter"
         >
-        <template v-slot:cell(confirm1.status)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
-          </template>
-          <template v-slot:cell(confirm1.confirmAt)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }):'' }}
-          </template>
-          <template v-slot:cell(confirm1.confirmBy)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1? item.confirm1.confirmBy :'' }}
-          </template>
-
-          <template v-slot:cell(confirm2.status)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
-          </template>
-          <template v-slot:cell(confirm2.confirmAt)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }):'' }}
-          </template>
-          <template v-slot:cell(confirm2.confirmBy)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1? item.confirm2.confirmBy :'' }}
+          <template v-slot:cell(status)="{ item }">
+            {{item.status === 1?'Đã xác nhận':'Chưa xác nhận'}}
           </template>
           <template v-slot:cell(actions)="{ item }">
             <b-icon
@@ -117,13 +89,13 @@
   </div>
 </template>
 <script>
-import adduser from '@/components/businesses/adduser'
-import edituser from '@/components/businesses/edituser'
-import viewGPKD from '@/components/businesses/viewGPKD'
-import Multiselect from 'vue-multiselect'
-const { BASE_URL } = require('../../utils/config')
+import adduser from "@/components/businesses/adduser";
+import edituser from "@/components/businesses/edituser";
+import viewGPKD from "@/components/businesses/viewGPKD";
+import Multiselect from "vue-multiselect";
+const { BASE_URL } = require("../../utils/config");
 export default {
-  data () {
+  data() {
     return {
       filter: null,
       isModalVisible: false,
@@ -136,59 +108,59 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
-      itemid: '',
+      itemid: "",
       fields: [
         {
-          key: 'name',
-          label: 'Tên công ty',
+          key: "name",
+          label: "Tên công ty",
           sortable: true,
           $isDisabled: true
         },
         {
-          key: 'username',
-          label: 'Mã số thuế',
+          key: "username",
+          label: "Mã số thuế",
           sortable: true,
           $isDisabled: true
         },
         {
-          key: 'createAt',
-          label: 'Thời gian đăng kí',
+          key: "createAt",
+          label: "Thời gian đăng kí",
           sortable: true,
-          thClass: 'text-center'
+          thClass: "text-center"
         },
         {
-          key: 'manager',
-          label: 'Người đăng kí',
+          key: "manager",
+          label: "Người đăng kí",
           sortable: true,
-          thClass: 'text-center'
+          thClass: "text-center"
         },
         {
-          key: 'position',
-          label: 'Chức vụ',
+          key: "position",
+          label: "Chức vụ",
           sortable: true,
-          thClass: 'text-center'
+          thClass: "text-center"
         },
         {
-          key: 'phone',
-          label: 'Số điện thoại',
+          key: "phone",
+          label: "Số điện thoại",
           sortable: true,
-          thClass: 'text-center'
+          thClass: "text-center"
         },
         {
-          key: 'email',
-          label: 'Email',
+          key: "email",
+          label: "Email",
           sortable: true,
-          thClass: 'text-center'
+          thClass: "text-center"
         },
-         {
-          key: 'status',
-          label: 'Trạng thái',
+        {
+          key: "status",
+          label: "Trạng thái",
           sortable: true,
-          thClass: 'text-center'
+          thClass: "text-center"
         },
-        { key: 'actions', label: 'Thao tác', sortable: false }
+        { key: "actions", label: "Thao tác", sortable: false }
       ]
-    }
+    };
   },
   components: {
     adduser,
@@ -197,67 +169,44 @@ export default {
     Multiselect
   },
   methods: {
-    showModal () {
-      this.isModalVisible = true
+    showModal() {
+      this.isModalVisible = true;
     },
-    showisModalEditVisible (id) {
-      this.itemid = id
-      this.isModalEditVisible = true
+    showisModalEditVisible(id) {
+      this.itemid = id;
+      this.isModalEditVisible = true;
     },
-    showModalViewGPKD (id) {
-      this.itemid = id
-      this.isModalViewGPKD = true
+    showModalViewGPKD(id) {
+      this.itemid = id;
+      this.isModalViewGPKD = true;
     },
-    closeModalViewGPKD () {
-      this.isModalViewGPKD = false
-    },
-
-    closeModal () {
-      this.isModalVisible = false
-    },
-    closeEditModal () {
-      this.isModalEditVisible = false
-    },
-    displayUserType (id) {
-      switch (id) {
-        case 1:
-          return 'Quản trị viên'
-          break
-        case 2:
-          return 'Người quản lý'
-          break
-        default:
-          return 'Nhân viên'
-      }
-    },
-    displayGPKDStatus (id) {
-      switch (id) {
-        case -1:
-          return 'Không đủ điều kiện'
-          break
-        case 0:
-          return 'Đang chờ duyệt'
-          break
-        case 1:
-          return 'Đã được duyệt'
-      }
+    closeModalViewGPKD() {
+      this.isModalViewGPKD = false;
     },
 
-    clickCallback (pageNum) {
+    closeModal() {
+      this.isModalVisible = false;
+    },
+    closeEditModal() {
+      this.isModalEditVisible = false;
+    },
+    
+   
+    clickCallback(pageNum) {
       this.$http
         .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
-          headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
+          headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
         })
-        .then(response => (this.items = response.data))
+        .then(response => (this.items = response.data));
     },
-    updateMessage (variable) {
-      this.items = variable
+    updateMessage(variable) {
+      this.items = variable;
     },
-    deleteItem (id, name) {
+    deleteItem(id, name) {
       this.$confirm({
-        message: 'Bạn có muốn xóa ' + name,
+        message: "Bạn có muốn xóa " + name,
         button: {
-          yes: 'Đồng ý'
+          yes: "Đồng ý"
         },
         callback: confirm => {
           if (confirm) {
@@ -267,7 +216,7 @@ export default {
 
                 {
                   headers: {
-                    Authorization: `Basic ${localStorage.getItem('token')}`
+                    Authorization: `Basic ${localStorage.getItem("token")}`
                   }
                 }
               )
@@ -275,38 +224,38 @@ export default {
                 this.$http
                   .get(`${BASE_URL}/business/getall`, {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem('token')}`
+                      Authorization: `Basic ${localStorage.getItem("token")}`
                     }
                   })
-                  .then(response => (this.items = response.data))
+                  .then(response => (this.items = response.data));
                 this.$http
-                  .get('api/user/getcountuser', {
+                  .get("api/user/getcountuser", {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem('token')}`
+                      Authorization: `Basic ${localStorage.getItem("token")}`
                     }
                   })
-                  .then(response => (this.totalRows = response.data))
+                  .then(response => (this.totalRows = response.data));
               })
-              .catch(function (error) {
-                console.error(error.response)
-              })
+              .catch(function(error) {
+                console.error(error.response);
+              });
           }
         }
-      })
+      });
     }
   },
-  created () {
+  created() {
     this.$http
       .get(`${BASE_URL}/business/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
       })
       .then(response => {
-        this.items = response.data
-        this.totalRows = response.data.length
+        this.items = response.data;
+        this.totalRows = response.data.length;
         if (this.$route.query.page === undefined) {
-          this.currentPage = 1
+          this.currentPage = 1;
         }
-      })
+      });
   }
-}
+};
 </script>

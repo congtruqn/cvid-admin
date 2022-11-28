@@ -60,37 +60,12 @@
           <template v-slot:cell(comfirm1)="{ item }">
             <td>sxc</td><td>s</td>
           </template>
-        <template v-slot:cell(confirm1)="{ item }">
-            <a v-if="item.confirm1.status == 0" @click="showModalViewGPKD(item)">Đang chờ duyệt</a>
-            <a v-else-if="item.confirm1.status == -1" disabled>
-              Trạng thái: Yêu cầu chỉnh sửa</br>
-              Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }) }}<br />
-              Người duyệt: {{ item.confirm1.confirmBy }}
-            </a>
-            <a v-else @click="showModalViewGPKD(item)"
-              >
-              Trạng thái: Đã duyệt </br>
-              Thời gian: {{ new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }) }}<br />
-              Người duyệt: {{ item.confirm1.confirmBy }}
-            </a>
-          </template>
+
           <template v-slot:cell(confirm1.status)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
+           {{getStatusConfirm(item.confirm1.status)}}
           </template>
           <template v-slot:cell(confirm1.confirmAt)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
+           {{item.confirm1 && item.confirm1.status !== 0? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
                 hour: '2-digit',
                 minute: '2-digit',
                 year: "numeric",
@@ -99,14 +74,14 @@
               }):'' }}
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1? item.confirm1.confirmBy :'' }}
+           {{item.confirm1 && item.confirm1.status !== 0? item.confirm1.confirmBy :'' }}
           </template>
 
           <template v-slot:cell(confirm2.status)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
+           {{getStatusConfirm(item.confirm2.status)}}
           </template>
           <template v-slot:cell(confirm2.confirmAt)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
+           {{item.confirm2 && item.confirm2.status !== 0? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
                 hour: '2-digit',
                 minute: '2-digit',
                 year: "numeric",
@@ -115,7 +90,7 @@
               }):'' }}
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1? item.confirm2.confirmBy :'' }}
+           {{item.confirm2 && item.confirm2.status !== 0? item.confirm2.confirmBy :'' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
               <b-icon
@@ -309,16 +284,14 @@ export default {
         pageSize: perPage
       }
     },
-    displayJobStatus (id) {
+    getStatusConfirm (id) {
       switch (id) {
-        case 1:
-          return 'Đang tìm việc'
-          break
+        case -1:
+          return 'Không được duyệt'
         case 0:
-          return 'Tạm dừng tìm việc'
-          break
-        default:
-          return 'Đang làm việc'
+          return 'Đang chờ duyệt'
+        case 1:
+          return 'Đã được duyệt'
       }
     },
     displayCvidStatus (id) {
@@ -362,7 +335,7 @@ export default {
                     }
                   })
                   .then((response) => {
-                    this.items = response.data
+                    this.items = response.data.filter(item => item.confirmPhone === true)
                     this.totalRows = response.data.length
                   })
               })
@@ -380,8 +353,8 @@ export default {
         headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then((response) => {
-        this.items = response.data
-        this.totalRows = response.data.length
+        this.items = response.data.filter(item => item.confirmPhone === true)
+        this.totalRows = this.items.length
         this.isBusy = false
         if (this.$route.query.page === undefined) {
           this.currentPage = 1

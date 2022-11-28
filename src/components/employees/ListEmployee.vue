@@ -40,8 +40,8 @@
           :fields="fields"
           :filter="filter"
         >
-          <template v-slot:cell(cvid)="{ item }">
-              CV{{item.username.slice(1)}}
+          <template v-slot:cell(confirmPhone)="{ item }">
+            {{item.confirmPhone?('CV'+item.username.slice(1)):item.username}}
           </template>
           <!-- <template v-slot:cell(actions)="{ item }">
               <b-icon
@@ -116,7 +116,7 @@ export default {
           sortable: true
         },
         {
-          key: 'createAt',
+          key: 'createdAt',
           label: 'Thời gian đăng kí',
           sortable: true,
           thClass: 'text-center'
@@ -140,7 +140,7 @@ export default {
           thClass: 'text-center'
         },
         {
-          key: 'cvid',
+          key: 'confirmPhone',
           label: 'Số CVID',
           sortable: true,
           class: 'text-center'

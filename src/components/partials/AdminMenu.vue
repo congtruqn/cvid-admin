@@ -23,8 +23,7 @@
         <ul class="sub-menu">
           <li><a href="/list-employee">Danh sách NLĐ đăng kí</a></li>
           <li><a href="/list-cvid">Danh sách CVID</a></li>
-          <li><a href="/employees/notbrowse">Danh sách CV không được duyệt</a></li>
-          <li><a href="/list-registered-businesses">Quản lý nhà tuyển dụng</a></li>
+          <li><a href="/list-registered-businesses">Danh sách NTD đăng kí</a></li>
           <li><a href="/businesses">Quản lý nhà tuyển dụng</a></li>
           <li><a href="/businesses/position">Quản lý tin tuyển dụng</a></li>
           <li><a href="/administrator/listuseraction">Quản lí tác vụ</a></li>

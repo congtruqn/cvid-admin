@@ -54,22 +54,13 @@
             }}
           </template>
           <template v-slot:cell(confirm1.status)="{ item }">
-            <div>
-              <b-form-checkbox
-                true-value="1"
-                false-value="0"
-                v-model.lazy="item.confirm1.status"
-                >{{
-                  item.confirm1 && item.confirm1.status == 1
-                    ? "Đã được duyệt"
-                    : "Đang chờ duyệt"
-                }}</b-form-checkbox
-              >
+            <div @click="item.confirm2.status != 1 && ConfirmModal(item.confirm1)">
+              <div :class="item.confirm1.status == 1 ? 'status-confirm active' : 'status-confirm'"></div>{{getStatusConfirm(item.confirm1.status)}}
             </div>
           </template>
           <template v-slot:cell(confirm1.confirmAt)="{ item }">
             {{
-              item.confirm1 && item.confirm1.status == 1
+              item.confirm1 && item.confirm1.status !== 0
                 ? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -82,27 +73,20 @@
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
             {{
-              item.confirm1 && item.confirm1.status == 1
+              item.confirm1 && item.confirm1.status !== 0
                 ? item.confirm1.confirmBy
                 : ""
             }}
           </template>
 
           <template v-slot:cell(confirm2.status)="{ item }">
-            <b-form-checkbox
-              v-model="item.confirm2.status"
-              true-value="1"
-              false-value="0"
-              >{{
-                item.confirm2 && item.confirm2.status == 1
-                  ? "Đã được duyệt"
-                  : "Đang chờ duyệt"
-              }}</b-form-checkbox
-            >
+            <div @click="item.confirm1.status == 1 && ConfirmModal(item.confirm2)">
+              <div :class="item.confirm2.status == 1 ? 'status-confirm active' : 'status-confirm'"></div>{{getStatusConfirm(item.confirm2.status)}}
+            </div>
           </template>
           <template v-slot:cell(confirm2.confirmAt)="{ item }">
             {{
-              item.confirm2 && item.confirm2.status == 1
+              item.confirm2 && item.confirm2.status !== 0
                 ? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -157,25 +141,27 @@
         v-show="isModalVisible"
         @close="closeModal"
       />
-      <edituser
+      <confirmModal
         :itemid="itemid"
-        v-show="isModalEditVisible"
-        @close="closeEditModal"
+        v-show="isModalConfirm"
+        @close="closeConfirmModal"
       />
     </section>
-    <vue-confirm-dialog></vue-confirm-dialog>
+
   </div>
 </template>
 <script>
-import adduser from "@/components/businesses/adduser";
-import edituser from "@/components/businesses/edituser";
-import viewGPKD from "@/components/businesses/viewGPKD";
-import Multiselect from "vue-multiselect";
-const { BASE_URL } = require("../../utils/config");
+import adduser from '@/components/businesses/adduser'
+import edituser from '@/components/businesses/edituser'
+import viewGPKD from '@/components/businesses/viewGPKD'
+import confirmModal from '@/components/businesses/ConfirmModal'
+import Multiselect from 'vue-multiselect'
+const { BASE_URL } = require('../../utils/config')
 export default {
-  data() {
+  data () {
     return {
       filter: null,
+      isModalConfirm: false,
       isModalVisible: false,
       isModalEditVisible: false,
       isModalViewGPKD: false,
@@ -186,152 +172,165 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
-      itemid: "",
+      itemid: '',
       fields: [
         {
-          key: "name",
-          label: "Tên công ty",
+          key: 'name',
+          label: 'Tên công ty',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "username",
-          label: "Mã số thuế",
+          key: 'username',
+          label: 'Mã số thuế',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "address",
-          label: "Địa chỉ",
+          key: 'address',
+          label: 'Địa chỉ',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "usernjame",
-          label: "Tình trạng hoạt động",
+          key: 'usernjame',
+          label: 'Tình trạng hoạt động',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "urlGPKD",
-          label: "Giấy ĐKKD",
+          key: 'urlGPKD',
+          label: 'Giấy ĐKKD',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "use",
-          label: "Người đại diện",
+          key: 'use',
+          label: 'Người đại diện',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "confirm1.status",
-          label: "Trạng thái duyệt 1",
+          key: 'confirm1.status',
+          label: 'Trạng thái duyệt 1',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "confirm1.confirmAt",
-          label: "Thời gian duyệt 1",
+          key: 'confirm1.confirmAt',
+          label: 'Thời gian duyệt 1',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "confirm1.confirmBy",
-          label: "Người duyệt 1",
+          key: 'confirm1.confirmBy',
+          label: 'Người duyệt 1',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "confirm2.status",
-          label: "Trạng thái duyệt 2",
+          key: 'confirm2.status',
+          label: 'Trạng thái duyệt 2',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "confirm2.confirmAt",
-          label: "Thời gian duyệt 2",
+          key: 'confirm2.confirmAt',
+          label: 'Thời gian duyệt 2',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "confirm2.confirmBy",
-          label: "Người duyệt 2",
+          key: 'confirm2.confirmBy',
+          label: 'Người duyệt 2',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
-        { key: "actions", label: "Thao tác", sortable: false }
+        { key: 'actions', label: 'Thao tác', sortable: false }
       ]
-    };
+    }
   },
   components: {
     adduser,
     edituser,
     viewGPKD,
+    confirmModal,
     Multiselect
   },
   methods: {
-    showModal() {
-      this.isModalVisible = true;
+
+    ConfirmModal (itemid) {
+      this.isModalConfirm = true
+      this.itemid = itemid
     },
-    showisModalEditVisible(id) {
-      this.itemid = id;
-      this.isModalEditVisible = true;
+    closeConfirmModal () {
+      this.isModalConfirm = false
     },
-    showModalViewGPKD(id) {
-      this.itemid = id;
-      this.isModalViewGPKD = true;
+    showisModalEditVisible (id) {
+      this.itemid = id
+      this.isModalEditVisible = true
     },
-    closeModalViewGPKD() {
-      this.isModalViewGPKD = false;
+    showModal (id) {
+      this.itemid = id
+      this.isModalVisible = true
+    },
+    showModalViewGPKD (id) {
+      this.itemid = id
+      this.isModalViewGPKD = true
+    },
+    closeModalViewGPKD () {
+      this.isModalViewGPKD = false
     },
 
-    closeModal() {
-      this.isModalVisible = false;
+    closeModal () {
+      this.isModalVisible = false
     },
-    closeEditModal() {
-      this.isModalEditVisible = false;
+    closeEditModal () {
+      this.isModalEditVisible = false
     },
-    displayUserType(id) {
-      switch (id) {
-        case 1:
-          return "Quản trị viên";
-          break;
-        case 2:
-          return "Người quản lý";
-          break;
-        default:
-          return "Nhân viên";
-      }
+    handleConfirm1 (item) {
+      item.status = -1
     },
-    displayGPKDStatus(id) {
+    getStatusConfirm (id) {
+      id = parseInt(id)
       switch (id) {
         case -1:
-          return "Không đủ điều kiện";
-          break;
+          return 'Không được duyệt'
         case 0:
-          return "Đang chờ duyệt";
-          break;
+          return 'Đang chờ duyệt'
         case 1:
-          return "Đã được duyệt";
+          return 'Đã được duyệt'
+      }
+    },
+    displayGPKDStatus (id) {
+      switch (id) {
+        case -1:
+          return 'Không đủ điều kiện'
+          break
+        case 0:
+          return 'Đang chờ duyệt'
+          break
+        case 1:
+          return 'Đã được duyệt'
       }
     },
 
-    clickCallback(pageNum) {
+    clickCallback (pageNum) {
       this.$http
         .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
-          headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
+          headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
         })
-        .then(response => (this.items = response.data));
+        .then(response => (this.items = response.data))
     },
-    updateMessage(variable) {
-      this.items = variable;
+
+    updateMessage (variable) {
+      this.items = variable
     },
-    deleteItem(id, name) {
+    deleteItem (id, name) {
       this.$confirm({
-        message: "Bạn có muốn xóa " + name,
+        message: 'Bạn có muốn xóa ' + name,
         button: {
-          yes: "Đồng ý"
+          yes: 'Đồng ý'
         },
         callback: confirm => {
           if (confirm) {
@@ -341,7 +340,7 @@ export default {
 
                 {
                   headers: {
-                    Authorization: `Basic ${localStorage.getItem("token")}`
+                    Authorization: `Basic ${localStorage.getItem('token')}`
                   }
                 }
               )
@@ -349,38 +348,50 @@ export default {
                 this.$http
                   .get(`${BASE_URL}/business/getall`, {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`
+                      Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
-                  .then(response => (this.items = response.data));
+                  .then(response => (this.items = response.data))
                 this.$http
-                  .get("api/user/getcountuser", {
+                  .get('api/user/getcountuser', {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`
+                      Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
-                  .then(response => (this.totalRows = response.data));
+                  .then(response => (this.totalRows = response.data))
               })
-              .catch(function(error) {
-                console.error(error.response);
-              });
+              .catch(function (error) {
+                console.error(error.response)
+              })
           }
         }
-      });
+      })
     }
   },
-  created() {
+  created () {
     this.$http
       .get(`${BASE_URL}/business/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
+        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then(response => {
-        this.items = response.data;
-        this.totalRows = response.data.length;
+        this.items = response.data
+        this.totalRows = response.data.length
         if (this.$route.query.page === undefined) {
-          this.currentPage = 1;
+          this.currentPage = 1
         }
-      });
+      })
   }
-};
+}
 </script>
+
+<style scoped>
+.status-confirm {
+  width: 15px;
+  height: 15px;
+  border: 1px solid black;
+  display: inline-block;
+}
+.status-confirm.active {
+  background: green;
+}
+</style>

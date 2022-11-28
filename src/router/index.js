@@ -95,15 +95,6 @@ let router = new Router({
         layout: 'Default'
       }
     },
-    {
-      path: '/employees/notbrowse',
-      name: 'employee-not-browse',
-      component: () => import('@/components/employees/employeesnotbrowse'),
-      meta: {
-        requiresAuth: true,
-        layout: 'Default'
-      }
-    },
 
     {
       path: '/businesses',

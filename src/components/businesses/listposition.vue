@@ -202,12 +202,7 @@ export default {
           sortable: true,
           $isDisabled: true
         },
-        {
-          key: "status",
-          label: "Trạng thái tuyển dụng",
-          sortable: false,
-          thClass: "text-center"
-        },
+       
         // {
         //   key: 'approved',
         //   label: 'Thông tin tuyển dụng',
@@ -217,6 +212,12 @@ export default {
         {
           key: "updateAt",
           label: "Thời gian cập nhật",
+          sortable: true,
+          thClass: "text-center"
+        },
+         {
+          key: "fkd",
+          label: "Nôị dung vị trí TD",
           sortable: true,
           thClass: "text-center"
         },
@@ -256,9 +257,9 @@ export default {
           sortable: true,
           thClass: 'text-center'
         },
-        {
-          key: "questions",
-          label: "Tiêu chí",
+         {
+          key: "status",
+          label: "Trạng thái tuyển dụng",
           sortable: false,
           thClass: "text-center"
         },
@@ -302,6 +303,16 @@ export default {
           return "Người quản lý";
         default:
           return "Nhân viên";
+      }
+    },
+    getStatusConfirm (id) {
+      switch (id) {
+        case -1:
+          return 'Không được duyệt'
+        case 0:
+          return 'Đang chờ duyệt'
+        case 1:
+          return 'Đã được duyệt'
       }
     },
     displayPositionStatus(id) {
