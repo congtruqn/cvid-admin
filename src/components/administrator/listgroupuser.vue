@@ -1,28 +1,21 @@
 <template>
   <div>
     <section class="content-header">
-      <h1>Quản lý người tìm việc</h1>
+      <h1>Quản lý nhân viên</h1>
       <ol class="breadcrumb">
         <li>
           <a><i class="fa fa-dashboard"></i>Trang chủ</a>
         </li>
-        <li><a>Danh sách người tìm việc</a></li>
+        <li><a>Danh sách nhân viên</a></li>
       </ol>
     </section>
     <section class="panel panel-inverse">
-      <multiselect
-        v-model="fields"
-        :options="options"
-        :multiple="true"
-        :close-on-select="false"
-        :clear-on-select="false"
-        :preserve-search="true"
-        placeholder="Nhập từ khóa"
-        label="label"
-        track-by="key"
-        :preselect-first="true"
-      ></multiselect>
       <div class="row">
+        <div class="panel-body">
+          <button class="btn btn-primary m-r-5 m-b-5" @click="showModal">
+            Thêm người dùng
+          </button>
+        </div>
         <b-form inline class="m-b-5 m-t-5">
           <b-form-select
             v-model="perPage"
@@ -49,7 +42,7 @@
         >
           <template #cell(show_details)="row">
             <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-              {{ row.detailsShowing ? "Hide" : "Show" }} Details
+              {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
             </b-button>
 
             <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
@@ -61,23 +54,17 @@
             </b-form-checkbox>
           </template>
           <template v-slot:cell(job.status)="{ item }">
-            <b>{{ item.job ? displayJobStatus(item.job.status) : "" }}</b>
+            <b>{{ item.job ? displayJobStatus(item.job.status) : '' }}</b>
           </template>
 
           <template #cell(show_details)="row">
             <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-              {{ row.detailsShowing ? "Hide" : "Show" }} Details
+              {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
             </b-button>
 
             <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
           </template>
           <template v-slot:cell(actions)="{ item }">
-            <b-icon
-              icon="pen"
-              variant="primary"
-              style="margin: auto 2px"
-              @click="showisModalEdit(item)"
-            ></b-icon>
             <b-icon
               icon="trash"
               variant="danger"
@@ -97,15 +84,14 @@
                     <b-col cols="6" sm="4" md="4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
-                        v-model="selected"
+                        v-model=row.item.roles
                         :aria-describedby="ariaDescribedby"
-                        name="flavour-2"
                         ><b>Quản lí NLĐ:</b><br />
-                        <b-form-checkbox value="orange">Thêm</b-form-checkbox>
+                        <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
                         <b-form-checkbox value="apple">Sửa</b-form-checkbox>
-                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox>
+                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox> -->
+                        <b-form-checkbox value="nldC1">Duyệt 1</b-form-checkbox>
+                        <b-form-checkbox value="nldC2">Duyệt 2</b-form-checkbox>
                       </b-form-checkbox-group>
                     </b-col>
                     <b-col cols="6" sm="4" md="4">
@@ -113,13 +99,12 @@
                         id="checkbox-group-2"
                         v-model="selected"
                         :aria-describedby="ariaDescribedby"
-                        name="flavour-2"
                         ><b>Quản lí NLĐ:</b><br />
-                        <b-form-checkbox value="orange">Thêm</b-form-checkbox>
+                        <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
                         <b-form-checkbox value="apple">Sửa</b-form-checkbox>
                         <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
                         <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox>
+                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
                       </b-form-checkbox-group>
                     </b-col>
                     <b-col cols="6" sm="4" md="4">
@@ -127,13 +112,12 @@
                         id="checkbox-group-2"
                         v-model="selected"
                         :aria-describedby="ariaDescribedby"
-                        name="flavour-2"
                         ><b>Quản lí NLĐ:</b><br />
-                        <b-form-checkbox value="orange">Thêm</b-form-checkbox>
+                        <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
                         <b-form-checkbox value="apple">Sửa</b-form-checkbox>
                         <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
                         <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox>
+                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
                       </b-form-checkbox-group>
                     </b-col>
                   </b-row>
@@ -141,22 +125,21 @@
               </b-col>
               <b-col cols="12" md="6">
                 <b-form-group
-                  label="Nhóm chức năng NLĐ"
+                  label="Nhóm chức năng NTD"
                   v-slot="{ ariaDescribedby }"
                 >
                   <b-row>
                     <b-col cols="6" sm="4" md="4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
-                        v-model="selected"
+                        v-model=row.item.roles
                         :aria-describedby="ariaDescribedby"
-                        name="flavour-2"
-                        ><b>Quản lí NLĐ:</b><br />
-                        <b-form-checkbox value="orange">Thêm</b-form-checkbox>
+                        ><b>Quản lí NTD:</b><br />
+                        <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
                         <b-form-checkbox value="apple">Sửa</b-form-checkbox>
-                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox>
+                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox> -->
+                        <b-form-checkbox value="ntdC1">Duyệt 1</b-form-checkbox>
+                        <b-form-checkbox value="ntdC2">Duyệt 2</b-form-checkbox>
                       </b-form-checkbox-group>
                     </b-col>
                     <b-col cols="6" sm="4" md="4">
@@ -164,13 +147,12 @@
                         id="checkbox-group-2"
                         v-model="selected"
                         :aria-describedby="ariaDescribedby"
-                        name="flavour-2"
-                        ><b>Quản lí NLĐ:</b><br />
-                        <b-form-checkbox value="orange">Thêm</b-form-checkbox>
+                        ><b>Quản lí NTD:</b><br />
+                        <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
                         <b-form-checkbox value="apple">Sửa</b-form-checkbox>
                         <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
                         <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox>
+                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
                       </b-form-checkbox-group>
                     </b-col>
                     <b-col cols="6" sm="4" md="4">
@@ -178,13 +160,12 @@
                         id="checkbox-group-2"
                         v-model="selected"
                         :aria-describedby="ariaDescribedby"
-                        name="flavour-2"
-                        ><b>Quản lí NLĐ:</b><br />
-                        <b-form-checkbox value="orange">Thêm</b-form-checkbox>
+                        ><b>Quản lí NTD:</b><br />
+                        <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
                         <b-form-checkbox value="apple">Sửa</b-form-checkbox>
                         <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
                         <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox>
+                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
                       </b-form-checkbox-group>
                     </b-col>
                   </b-row>
@@ -194,6 +175,9 @@
 
             <b-button size="sm" @click="row.toggleDetails"
               >Hide Details</b-button
+            >
+            <b-button size="sm" variant="success"
+              >Lưu</b-button
             >
           </template>
         </b-table>
@@ -220,11 +204,11 @@
         v-show="isModalViewCv"
         @close="closeModalViewCv"
       />
-      <!-- <adduser
+      <AddAdmin
         @inputData="updateMessage"
         v-show="isModalVisible"
         @close="closeModal"
-      /> -->
+      />
       <edituser
         :itemid="itemid"
         v-show="isModalEditVisible"
@@ -240,18 +224,20 @@
   </div>
 </template>
 <script>
-import editadmin from "@/components/administrator/editadmin";
-import edituser from "@/components/employees/edituser";
-import viewcv from "@/components/employees/viewcv";
-import Multiselect from "vue-multiselect";
-const { BASE_URL } = require("../../utils/config");
+import editadmin from '@/components/administrator/editadmin'
+import edituser from '@/components/employees/edituser'
+import viewcv from '@/components/employees/viewcv'
+import AddAdmin from '@/components/administrator/AddAdmin'
+
+const { BASE_URL } = require('../../utils/config')
 export default {
-  data() {
+  data () {
     return {
-      encodedURL: `?token=${encodeURIComponent(localStorage.getItem("token"))}`,
+      encodedURL: `?token=${encodeURIComponent(localStorage.getItem('token'))}`,
       filter: null,
       isModalVisible: false,
       isModalEdit: false,
+      isModalEditVisible: false,
       isModalViewCv: false,
       jobtitles: [],
       items: [],
@@ -260,177 +246,158 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
-      itemid: "",
-      options: [
-        {
-          key: "approved",
-          label: "Trạng thái Cvid",
-          sortable: true,
-          thClass: "text-center"
-        },
-        {
-          key: "job.status",
-          label: "Trạng thái tìm việc",
-          sortable: true,
-          thClass: "text-center"
-        },
-        { key: "actions", label: "Thao tác", sortable: false }
-      ],
+      itemid: '',
       fields: [
         {
-          key: "username",
-          label: "Tên đăng nhập",
+          key: 'username',
+          label: 'Tên đăng nhập',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "name",
-          label: "Họ và tên",
+          key: 'name',
+          label: 'Họ và tên',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "status",
-          label: "Kích hoạt",
+          key: 'status',
+          label: 'Kích hoạt',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "show_details",
-          label: "Kích hoạt",
-          thClass: "text-center"
+          key: 'show_details',
+          label: 'Kích hoạt',
+          thClass: 'text-center'
         },
-        { key: "actions", label: "Thao tác", sortable: false }
+        { key: 'actions', label: 'Thao tác', sortable: false }
       ]
-    };
+    }
   },
   components: {
     editadmin,
     edituser,
     viewcv,
-    Multiselect
+    AddAdmin
   },
   methods: {
-    showModal() {
-      this.isModalVisible = true;
+    showModal () {
+      this.isModalVisible = true
     },
-    showisModalEdit(id) {
-      this.itemid = id;
-      this.isModalEdit = true;
+    showisModalEdit (id) {
+      this.itemid = id
+      this.isModalEdit = true
     },
-    showisModalViewCv(id) {
-      this.itemid = id;
-      this.isModalViewCv = true;
+    showisModalViewCv (id) {
+      this.itemid = id
+      this.isModalViewCv = true
     },
-    closeModal() {
-      this.isModalVisible = false;
+    closeModal () {
+      this.isModalVisible = false
     },
-    closeEditModal() {
-      this.isModalEditVisible = false;
+    closeEditModal () {
+      this.isModalEditVisible = false
     },
-    closeModalViewCv() {
-      this.isModalViewCv = false;
+    closeModalViewCv () {
+      this.isModalViewCv = false
     },
-    clickCallback(pageNum) {
+    clickCallback (pageNum) {
       this.items = this.employees.filter((item, index) => {
         if (
           (pageNum - 1) * this.perPage <= index &&
           index < pageNum * this.perPage
         ) {
-          return true;
+          return true
         }
-        return false;
-      });
+        return false
+      })
     },
-    updateMessage(variable) {
-      this.items = variable;
+    updateMessage (variable) {
+      this.items = variable
     },
 
-    makeQueryParams(sortOrder, currentPage, perPage) {
+    makeQueryParams (sortOrder, currentPage, perPage) {
       return {
         sortBy: sortOrder[0].field,
         sortOrder: sortOrder[0].direction,
         pageNo: currentPage,
         pageSize: perPage
-      };
-    },
-    displayJobStatus(id) {
-      switch (id) {
-        case 1:
-          return "Đang tìm việc";
-          break;
-        case 0:
-          return "Tạm dừng tìm việc";
-          break;
-        default:
-          return "Đang làm việc";
       }
     },
-    displayCvidStatus(id) {
+    displayJobStatus (id) {
+      switch (id) {
+        case 1:
+          return 'Đang tìm việc'
+        case 0:
+          return 'Tạm dừng tìm việc'
+        default:
+          return 'Đang làm việc'
+      }
+    },
+    displayCvidStatus (id) {
       switch (id) {
         case -1:
-          return "Không được duyệt";
-          break;
+          return 'Không được duyệt'
         case 0:
-          return "Đang chờ duyệt";
-          break;
+          return 'Đang chờ duyệt'
         case 1:
-          return "Đã duyệt lần 1";
-          break;
+          return 'Đã duyệt lần 1'
         case 2:
-          return "Đã duyệt lần 2";
-          break;
+          return 'Đã duyệt lần 2'
         default:
-          return "Chưa tạo CV";
+          return 'Chưa tạo CV'
       }
     },
 
-    deleteItem(id, name) {
+    deleteItem (id, name) {
       this.$confirm({
-        message: "Bạn có muốn xóa " + name,
+        message: 'Bạn có muốn xóa ' + name,
         button: {
-          yes: "Đồng ý"
+          yes: 'Đồng ý'
         },
         callback: confirm => {
           if (confirm) {
             this.$http
               .get(`${BASE_URL}/employee/delete/${id}`, {
                 headers: {
-                  Authorization: `Basic ${localStorage.getItem("token")}`
+                  Authorization: `Basic ${localStorage.getItem('token')}`
                 }
               })
               .then(response => {
                 this.$http
-                  .get(`${BASE_URL}/employee/getall`, {
+                  .get(`${BASE_URL}/admin/getall`, {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`
+                      Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
                   .then(response => {
-                    this.items = response.data;
-                    this.totalRows = response.data.length;
-                  });
+                    this.items = response.data.data
+                    this.totalRows = this.items.length
+                  })
               })
-              .catch(function(error) {
-                console.error(error.response);
-              });
+              .catch(function (error) {
+                console.error(error.response)
+              })
           }
         }
-      });
+      })
     }
   },
-  created() {
+  created () {
     this.$http
-      .get(`${BASE_URL}/employee/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
+      .get(`${BASE_URL}/admin/getall`, {
+        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then(response => {
-        this.items = response.data.filter(cv => cv.approved != -1);
-        this.totalRows = response.data.length;
-        if (this.$route.query.page === undefined) {
-          this.currentPage = 1;
+        if (response.data) {
+          this.items = response.data.data
+          this.totalRows = this.items.length
+          if (this.$route.query.page === undefined) {
+            this.currentPage = 1
+          }
         }
-      });
+      })
   }
-};
+}
 </script>

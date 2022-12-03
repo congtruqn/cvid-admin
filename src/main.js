@@ -27,6 +27,7 @@ Vue.use(IconsPlugin)
 
 // Optionally install the BootstrapVue icon components plugin
 
+
 var Paginate = require('vuejs-paginate')
 Vue.component('paginate', Paginate)
 Vue.use(VueConfirmDialog)
@@ -37,6 +38,12 @@ Vue.use(Autocomplete)
 Vue.use(excel)
 Vue.config.productionTip = false
 Vue.prototype.$http = Axios
+
+
+
+
+// Install the store instance as a plugin
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

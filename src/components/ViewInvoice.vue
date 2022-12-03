@@ -46,54 +46,54 @@ export default {
   },
   methods: {
     loadTextFromFile(e) {
-     let files = e.target.files || e.dataTransfer.files;
-     if (!files.length) return;
-     var temp = this.readFile(files[0]);
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      var temp = this.readFile(files[0]);
     },
     readFile(file) {
-        let reader = new FileReader();
-        reader.onload = e => {
-            let json = e.target.result;
-            let doc = new dom().parseFromString(json);
-            var signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
-            var publickey = select(doc, "//*[local-name(.)='X509Certificate']")[0]
-            var KHMSHDon = select(doc, "//*[local-name(.)='KHMSHDon']")[0];
-            console.log(publickey);
-            if(publickey!='undefined'&&publickey!=undefined){
-              if(KHMSHDon!='undefined'){
-                this.KHMSHDon = '<i class="fa fa-check-circle text-green" aria-hidden="true"></i> <b>Mẫu số: </b> ' +KHMSHDon.firstChild;
-              }
-              else{
-                this.KHMSHDon = '';
-              }
-              var sig = new SignedXml()
-              sig.keyInfoProvider = new this.MyKeyInfo(publickey.firstChild)
-              sig.loadSignature(signature)
+      let reader = new FileReader();
+      reader.onload = e => {
+        let json = e.target.result;
+        let doc = new dom().parseFromString(json);
+        var signature = select(doc, "//*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']")[0]
+        var publickey = select(doc, "//*[local-name(.)='X509Certificate']")[0]
+        var KHMSHDon = select(doc, "//*[local-name(.)='KHMSHDon']")[0];
+        console.log(publickey);
+        if(publickey!='undefined'&&publickey!=undefined){
+          if(KHMSHDon!='undefined'){
+            this.KHMSHDon = '<i class="fa fa-check-circle text-green" aria-hidden="true"></i> <b>Mẫu số: </b> ' +KHMSHDon.firstChild;
+          }
+          else{
+            this.KHMSHDon = '';
+          }
+          var sig = new SignedXml()
+          sig.keyInfoProvider = new this.MyKeyInfo(publickey.firstChild)
+          sig.loadSignature(signature)
               
-              var res = sig.checkSignature(json)
-              if (!res)
-              {
-                this.isValid= false
-                this.isNotValid = true;
-                this.isNotPubicKey  = false;
-                console.log(sig.validationErrors)
-              }
-              else{
-                this.isValid= true
-                this.isNotValid = false;
-                this.isNotPubicKey  = false;
+          var res = sig.checkSignature(json)
+          if (!res)
+          {
+            this.isValid= false
+            this.isNotValid = true;
+            this.isNotPubicKey  = false;
+            console.log(sig.validationErrors)
+          }
+          else{
+            this.isValid= true
+            this.isNotValid = false;
+            this.isNotPubicKey  = false
                 
-              }
-            }
-            else{
-              this.isValid= false;
-              this.isNotValid = false;
-              this.isNotPubicKey  = true;
-            }
-        };
-        reader.readAsText(file);
-   },
-   MyKeyInfo(signature) {
+          }
+        }
+        else{
+          this.isValid= false;
+          this.isNotValid = false;
+          this.isNotPubicKey  = true;
+        }
+      };
+      reader.readAsText(file);
+    },
+    MyKeyInfo(signature) {
 	  this.getKeyInfo = function(key, prefix) {
         prefix = prefix || ''
         prefix = prefix ? prefix + ':' : prefix
@@ -103,7 +103,7 @@ export default {
 	    //you can use the keyInfo parameter to extract the key in any way you want      
 	    return '-----BEGIN CERTIFICATE-----'+signature+'-----END CERTIFICATE-----';
 	  }
-	}
+    }
   }
 };
 </script>

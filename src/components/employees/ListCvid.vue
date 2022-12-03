@@ -162,49 +162,57 @@ export default {
         {
           key: 'name',
           label: 'Họ và tên',
-          sortable: true
+          sortable: true,
+          value: ''
         },
         {
           key: 'viewcv',
           label: 'Thông tin CV',
           sortable: true,
-          class: 'text-center'
+          class: 'text-center',
+          value: ''
         },
         {
           key: 'confirm1.status',
           label: 'Trạng thái duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'nldC1'
         },
         {
           key: 'confirm1.confirmAt',
           label: 'Thời gian duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'nldC1'
         },
         {
           key: 'confirm1.confirmBy',
           label: 'Người duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'nldC1'
         },
         {
           key: 'confirm2.status',
           label: 'Trạng thái duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'nldC2'
         },
         {
           key: 'confirm2.confirmAt',
           label: 'Thời gian duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'nldC2'
         },
         {
           key: 'confirm2.confirmBy',
           label: 'Người duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'nldC2'
         },
         // {
         //   key: 'job.status',
@@ -348,6 +356,23 @@ export default {
     }
   },
   created () {
+    this.$http
+      .get(`${BASE_URL}/admin/me`, {
+        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
+      })
+      .then((response) => {
+        if (response.data){
+          let admin = response.data
+          console.log(admin)
+          this.fields = this.fields.filter(item => {
+            if (item.value !== '') {
+              console.log(admin.roles.includes(item.value))
+              return admin.roles.includes(item.value)
+            }
+            return true
+          })
+        }
+      })
     this.$http
       .get(`${BASE_URL}/employee/getall`, {
         headers: { Authorization: `Basic ${localStorage.getItem('token')}` }

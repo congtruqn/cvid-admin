@@ -14,7 +14,7 @@
       <div class="row">
         <div class="panel-body">
           <button class="btn btn-primary m-r-5 m-b-5" @click="showModal">
-            Thêm người dùng
+            Thêm nhân viên
           </button>
         </div>
         <b-form inline class="m-b-5 m-t-5">
@@ -45,63 +45,81 @@
           <template v-slot:cell(address)="{ item }">
             {{
               item.address +
-                ", " +
+                ', ' +
                 item.ward +
-                ", " +
+                ', ' +
                 item.district +
-                ", " +
+                ', ' +
                 item.province
             }}
           </template>
           <template v-slot:cell(confirm1.status)="{ item }">
-            <div @click="item.confirm2.status != 1 && ConfirmModal(item.confirm1)">
-              <div :class="item.confirm1.status == 1 ? 'status-confirm active' : 'status-confirm'"></div>{{getStatusConfirm(item.confirm1.status)}}
+            <div
+              @click="item.confirm2.status != 1 && ConfirmModal(item.confirm1)"
+            >
+              <div
+                :class="
+                  item.confirm1.status == 1
+                    ? 'status-confirm active'
+                    : 'status-confirm'
+                "
+              ></div>
+              {{ getStatusConfirm(item.confirm1.status) }}
             </div>
           </template>
           <template v-slot:cell(confirm1.confirmAt)="{ item }">
             {{
               item.confirm1 && item.confirm1.status !== 0
-                ? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
+                ? new Date(item.confirm1.confirmAt).toLocaleString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
                   })
-                : ""
+                : ''
             }}
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
             {{
               item.confirm1 && item.confirm1.status !== 0
                 ? item.confirm1.confirmBy
-                : ""
+                : ''
             }}
           </template>
 
           <template v-slot:cell(confirm2.status)="{ item }">
-            <div @click="item.confirm1.status == 1 && ConfirmModal(item.confirm2)">
-              <div :class="item.confirm2.status == 1 ? 'status-confirm active' : 'status-confirm'"></div>{{getStatusConfirm(item.confirm2.status)}}
+            <div
+              @click="item.confirm1.status == 1 && ConfirmModal(item.confirm2)"
+            >
+              <div
+                :class="
+                  item.confirm2.status == 1
+                    ? 'status-confirm active'
+                    : 'status-confirm'
+                "
+              ></div>
+              {{ getStatusConfirm(item.confirm2.status) }}
             </div>
           </template>
           <template v-slot:cell(confirm2.confirmAt)="{ item }">
             {{
               item.confirm2 && item.confirm2.status !== 0
-                ? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
+                ? new Date(item.confirm2.confirmAt).toLocaleString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
                   })
-                : ""
+                : ''
             }}
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
             {{
               item.confirm2 && item.confirm2.status == 1
                 ? item.confirm2.confirmBy
-                : ""
+                : ''
             }}
           </template>
           <template v-slot:cell(actions)="{ item }">
@@ -147,18 +165,17 @@
         @close="closeConfirmModal"
       />
     </section>
-
   </div>
 </template>
 <script>
-import adduser from '@/components/businesses/adduser'
-import edituser from '@/components/businesses/edituser'
-import viewGPKD from '@/components/businesses/viewGPKD'
-import confirmModal from '@/components/businesses/ConfirmModal'
-import Multiselect from 'vue-multiselect'
-const { BASE_URL } = require('../../utils/config')
+import adduser from '@/components/businesses/adduser';
+import edituser from '@/components/businesses/edituser';
+import viewGPKD from '@/components/businesses/viewGPKD';
+import confirmModal from '@/components/businesses/ConfirmModal';
+
+const { BASE_URL } = require('../../utils/config');
 export default {
-  data () {
+  data() {
     return {
       filter: null,
       isModalConfirm: false,
@@ -178,155 +195,159 @@ export default {
           key: 'name',
           label: 'Tên công ty',
           sortable: true,
-          $isDisabled: true
+          value: ''
         },
         {
           key: 'username',
           label: 'Mã số thuế',
           sortable: true,
-          $isDisabled: true
+          value: ''
         },
         {
           key: 'address',
           label: 'Địa chỉ',
           sortable: true,
-          $isDisabled: true
+          value: ''
         },
         {
           key: 'usernjame',
           label: 'Tình trạng hoạt động',
           sortable: true,
-          $isDisabled: true
+          value: ''
         },
         {
           key: 'urlGPKD',
           label: 'Giấy ĐKKD',
           sortable: true,
-          $isDisabled: true
+          value: ''
         },
         {
           key: 'use',
           label: 'Người đại diện',
           sortable: true,
-          $isDisabled: true
+          value: ''
         },
         {
           key: 'confirm1.status',
           label: 'Trạng thái duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'ntdC1'
         },
         {
           key: 'confirm1.confirmAt',
           label: 'Thời gian duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'ntdC1',
         },
         {
           key: 'confirm1.confirmBy',
           label: 'Người duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'ntdC1'
         },
         {
           key: 'confirm2.status',
           label: 'Trạng thái duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'ntdC2'
         },
         {
           key: 'confirm2.confirmAt',
           label: 'Thời gian duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'ntdC2'
         },
         {
           key: 'confirm2.confirmBy',
           label: 'Người duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
+          value: 'ntdC2'
         },
-        { key: 'actions', label: 'Thao tác', sortable: false }
+        { key: 'actions', label: 'Thao tác', sortable: false, value: '' }
       ]
-    }
+    };
   },
   components: {
     adduser,
     edituser,
     viewGPKD,
-    confirmModal,
-    Multiselect
+    confirmModal
   },
   methods: {
+    ConfirmModal(itemid) {
+      this.isModalConfirm = true;
+      this.itemid = itemid;
+    },
+    closeConfirmModal() {
+      this.isModalConfirm = false;
+    },
+    showisModalEditVisible(id) {
+      this.itemid = id;
+      this.isModalEditVisible = true;
+    },
+    showModal(id) {
+      this.itemid = id;
+      this.isModalVisible = true;
+    },
+    showModalViewGPKD(id) {
+      this.itemid = id;
+      this.isModalViewGPKD = true;
+    },
+    closeModalViewGPKD() {
+      this.isModalViewGPKD = false;
+    },
 
-    ConfirmModal (itemid) {
-      this.isModalConfirm = true
-      this.itemid = itemid
+    closeModal() {
+      this.isModalVisible = false;
     },
-    closeConfirmModal () {
-      this.isModalConfirm = false
+    closeEditModal() {
+      this.isModalEditVisible = false;
     },
-    showisModalEditVisible (id) {
-      this.itemid = id
-      this.isModalEditVisible = true
+    handleConfirm1(item) {
+      item.status = -1;
     },
-    showModal (id) {
-      this.itemid = id
-      this.isModalVisible = true
-    },
-    showModalViewGPKD (id) {
-      this.itemid = id
-      this.isModalViewGPKD = true
-    },
-    closeModalViewGPKD () {
-      this.isModalViewGPKD = false
-    },
-
-    closeModal () {
-      this.isModalVisible = false
-    },
-    closeEditModal () {
-      this.isModalEditVisible = false
-    },
-    handleConfirm1 (item) {
-      item.status = -1
-    },
-    getStatusConfirm (id) {
-      id = parseInt(id)
+    getStatusConfirm(id) {
+      id = parseInt(id);
       switch (id) {
         case -1:
-          return 'Không được duyệt'
+          return 'Không được duyệt';
         case 0:
-          return 'Đang chờ duyệt'
+          return 'Đang chờ duyệt';
         case 1:
-          return 'Đã được duyệt'
+          return 'Đã được duyệt';
       }
     },
-    displayGPKDStatus (id) {
+    displayGPKDStatus(id) {
       switch (id) {
         case -1:
-          return 'Không đủ điều kiện'
-          break
+          return 'Không đủ điều kiện';
+          break;
         case 0:
-          return 'Đang chờ duyệt'
-          break
+          return 'Đang chờ duyệt';
+          break;
         case 1:
-          return 'Đã được duyệt'
+          return 'Đã được duyệt';
       }
     },
 
-    clickCallback (pageNum) {
+    clickCallback(pageNum) {
       this.$http
         .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
           headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
         })
-        .then(response => (this.items = response.data))
+        .then(response => (this.items = response.data));
     },
 
-    updateMessage (variable) {
-      this.items = variable
+    updateMessage(variable) {
+      this.items = variable;
     },
-    deleteItem (id, name) {
+    deleteItem(id, name) {
       this.$confirm({
         message: 'Bạn có muốn xóa ' + name,
         button: {
@@ -351,37 +372,54 @@ export default {
                       Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
-                  .then(response => (this.items = response.data))
+                  .then(response => (this.items = response.data));
                 this.$http
                   .get('api/user/getcountuser', {
                     headers: {
                       Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
-                  .then(response => (this.totalRows = response.data))
+                  .then(response => (this.totalRows = response.data));
               })
-              .catch(function (error) {
-                console.error(error.response)
-              })
+              .catch(function(error) {
+                console.error(error.response);
+              });
           }
         }
-      })
+      });
     }
   },
-  created () {
+  created() {
+    this.$http
+      .get(`${BASE_URL}/admin/me`, {
+        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
+      })
+      .then(response => {
+        if (response.data) {
+          let admin = response.data;
+          console.log(admin);
+          this.fields = this.fields.filter(item => {
+            if (item.value !== '') {
+              console.log(admin.roles.includes(item.value));
+              return admin.roles.includes(item.value);
+            }
+            return true;
+          });
+        }
+      });
     this.$http
       .get(`${BASE_URL}/business/getall`, {
         headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then(response => {
-        this.items = response.data
-        this.totalRows = response.data.length
+        this.items = response.data;
+        this.totalRows = response.data.length;
         if (this.$route.query.page === undefined) {
-          this.currentPage = 1
+          this.currentPage = 1;
         }
-      })
+      });
   }
-}
+};
 </script>
 
 <style scoped>

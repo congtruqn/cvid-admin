@@ -11,47 +11,52 @@
   </div>
 </template>
 <script>
-const { BASE_URL } = require('../utils/config')
+const { BASE_URL } = require('../utils/config');
+
 export default {
-  data () {
+  data() {
     return {
       email: '',
       password: ''
-    }
+    };
   },
   methods: {
-    handleSubmit (e) {
-      e.preventDefault()
+    handleSubmit(e) {
+      e.preventDefault();
       if (this.password.length > 0) {
         this.$http
           .post(`${BASE_URL}/admin/login`, {
             username: this.email,
             password: this.password
           })
-          .then((response) => {
-            console.log(response.data.userinfo)
+          .then(response => {
             if (response.data.userinfo) {
-              console.log('1')
               localStorage.setItem(
                 'user',
                 JSON.stringify(response.data.userinfo)
-              )
-              localStorage.setItem('token', response.data.token)
+              );
+              localStorage.setItem('token', response.data.token);
+              console.log(1, (JSON.stringify(response.data.userinfo)))
+              // localStorage.setItem(
+              //   'view',
+              //   btoa(JSON.stringify(response.data.userinfo))
+              // );
+
               if (localStorage.getItem('token') != null) {
-                this.$emit('loggedIn')
+                this.$emit('loggedIn');
                 if (this.$route.params.nextUrl != null) {
-                  this.$router.push(this.$route.params.nextUrl)
+                  this.$router.push(this.$route.params.nextUrl);
                 } else {
-                  this.$router.push('list-employee')
+                  this.$router.push('list-employee');
                 }
               }
             }
           })
-          .catch(function (error) {
-            console.error(error.response)
-          })
+          .catch(function(error) {
+            console.error(error.response);
+          });
       }
     }
   }
-}
+};
 </script>
