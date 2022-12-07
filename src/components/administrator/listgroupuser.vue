@@ -75,6 +75,32 @@
 
           <template #row-details="row">
             <b-row>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">Mật khẩu</label>
+                  <div class="col-sm-6">
+                    <input
+                      type="password"
+                      class="form-control"
+                      v-model="row.item.password"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-sm-4 control-label"
+                    >Xác nhận mật khẩu</label
+                  >
+                  <div class="col-sm-6">
+                    <input
+                      type="password"
+                      class="form-control"
+                      v-model="row.item.password2"
+                    />
+                  </div>
+                </div>
+              </div>
               <b-col cols="12" md="6">
                 <b-form-group
                   label="Nhóm chức năng NLĐ"
@@ -84,7 +110,7 @@
                     <b-col cols="6" sm="4" md="4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
-                        v-model=row.item.roles
+                        v-model="row.item.roles"
                         :aria-describedby="ariaDescribedby"
                         ><b>Quản lí NLĐ:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
@@ -97,7 +123,6 @@
                     <b-col cols="6" sm="4" md="4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
-                        v-model="selected"
                         :aria-describedby="ariaDescribedby"
                         ><b>Quản lí NLĐ:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
@@ -110,7 +135,6 @@
                     <b-col cols="6" sm="4" md="4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
-                        v-model="selected"
                         :aria-describedby="ariaDescribedby"
                         ><b>Quản lí NLĐ:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
@@ -132,7 +156,7 @@
                     <b-col cols="6" sm="4" md="4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
-                        v-model=row.item.roles
+                        v-model="row.item.roles"
                         :aria-describedby="ariaDescribedby"
                         ><b>Quản lí NTD:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
@@ -145,7 +169,6 @@
                     <b-col cols="6" sm="4" md="4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
-                        v-model="selected"
                         :aria-describedby="ariaDescribedby"
                         ><b>Quản lí NTD:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
@@ -158,7 +181,6 @@
                     <b-col cols="6" sm="4" md="4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
-                        v-model="selected"
                         :aria-describedby="ariaDescribedby"
                         ><b>Quản lí NTD:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
@@ -176,7 +198,7 @@
             <b-button size="sm" @click="row.toggleDetails"
               >Hide Details</b-button
             >
-            <b-button size="sm" variant="success"
+            <b-button size="sm" variant="success" @click="editItem(row.item)"
               >Lưu</b-button
             >
           </template>
@@ -224,14 +246,14 @@
   </div>
 </template>
 <script>
-import editadmin from '@/components/administrator/editadmin'
-import edituser from '@/components/employees/edituser'
-import viewcv from '@/components/employees/viewcv'
-import AddAdmin from '@/components/administrator/AddAdmin'
+import editadmin from '@/components/administrator/editadmin';
+import edituser from '@/components/employees/edituser';
+import viewcv from '@/components/employees/viewcv';
+import AddAdmin from '@/components/administrator/AddAdmin';
 
-const { BASE_URL } = require('../../utils/config')
+const { BASE_URL } = require('../../utils/config');
 export default {
-  data () {
+  data() {
     return {
       encodedURL: `?token=${encodeURIComponent(localStorage.getItem('token'))}`,
       filter: null,
@@ -273,7 +295,7 @@ export default {
         },
         { key: 'actions', label: 'Thao tác', sortable: false }
       ]
-    }
+    };
   },
   components: {
     editadmin,
@@ -282,75 +304,75 @@ export default {
     AddAdmin
   },
   methods: {
-    showModal () {
-      this.isModalVisible = true
+    showModal() {
+      this.isModalVisible = true;
     },
-    showisModalEdit (id) {
-      this.itemid = id
-      this.isModalEdit = true
+    showisModalEdit(id) {
+      this.itemid = id;
+      this.isModalEdit = true;
     },
-    showisModalViewCv (id) {
-      this.itemid = id
-      this.isModalViewCv = true
+    showisModalViewCv(id) {
+      this.itemid = id;
+      this.isModalViewCv = true;
     },
-    closeModal () {
-      this.isModalVisible = false
+    closeModal() {
+      this.isModalVisible = false;
     },
-    closeEditModal () {
-      this.isModalEditVisible = false
+    closeEditModal() {
+      this.isModalEditVisible = false;
     },
-    closeModalViewCv () {
-      this.isModalViewCv = false
+    closeModalViewCv() {
+      this.isModalViewCv = false;
     },
-    clickCallback (pageNum) {
+    clickCallback(pageNum) {
       this.items = this.employees.filter((item, index) => {
         if (
           (pageNum - 1) * this.perPage <= index &&
           index < pageNum * this.perPage
         ) {
-          return true
+          return true;
         }
-        return false
-      })
+        return false;
+      });
     },
-    updateMessage (variable) {
-      this.items = variable
+    updateMessage(variable) {
+      this.items = variable;
     },
 
-    makeQueryParams (sortOrder, currentPage, perPage) {
+    makeQueryParams(sortOrder, currentPage, perPage) {
       return {
         sortBy: sortOrder[0].field,
         sortOrder: sortOrder[0].direction,
         pageNo: currentPage,
         pageSize: perPage
-      }
+      };
     },
-    displayJobStatus (id) {
-      switch (id) {
-        case 1:
-          return 'Đang tìm việc'
-        case 0:
-          return 'Tạm dừng tìm việc'
-        default:
-          return 'Đang làm việc'
+    editItem(item) {
+      if (item.password != item.password2) {
+        return alert('Xác nhận mật khẩu không khớp')
       }
-    },
-    displayCvidStatus (id) {
-      switch (id) {
-        case -1:
-          return 'Không được duyệt'
-        case 0:
-          return 'Đang chờ duyệt'
-        case 1:
-          return 'Đã duyệt lần 1'
-        case 2:
-          return 'Đã duyệt lần 2'
-        default:
-          return 'Chưa tạo CV'
-      }
+      this.$http
+        .put(
+          `${BASE_URL}/admin/edit`,
+          {
+            data: item
+          },
+          {
+            headers: {
+              Authorization: `Basic ${localStorage.getItem('token')}`
+            }
+          }
+        )
+        .then(response => {
+          alert('Cập nhật thành công')
+        })
+        .catch(function(error) {
+          console.error(error.response);
+        });
+      console.log(item);
     },
 
-    deleteItem (id, name) {
+    deleteItem(id, name) {
       this.$confirm({
         message: 'Bạn có muốn xóa ' + name,
         button: {
@@ -372,32 +394,32 @@ export default {
                     }
                   })
                   .then(response => {
-                    this.items = response.data.data
-                    this.totalRows = this.items.length
-                  })
+                    this.items = response.data.data;
+                    this.totalRows = this.items.length;
+                  });
               })
-              .catch(function (error) {
-                console.error(error.response)
-              })
+              .catch(function(error) {
+                console.error(error.response);
+              });
           }
         }
-      })
+      });
     }
   },
-  created () {
+  created() {
     this.$http
       .get(`${BASE_URL}/admin/getall`, {
         headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then(response => {
         if (response.data) {
-          this.items = response.data.data
-          this.totalRows = this.items.length
+          this.items = response.data.data;
+          this.totalRows = this.items.length;
           if (this.$route.query.page === undefined) {
-            this.currentPage = 1
+            this.currentPage = 1;
           }
         }
-      })
+      });
   }
-}
+};
 </script>

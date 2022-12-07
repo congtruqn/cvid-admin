@@ -2,19 +2,19 @@
 <template>
   <div>
     <section class="content-header">
-      <h1>Quản lý người dùng</h1>
+      <h1>Quản lý NTD đăng kí</h1>
       <ol class="breadcrumb">
         <li>
           <a><i class="fa fa-dashboard"></i>Trang chủ</a>
         </li>
-        <li><a>Danh sách người dùng</a></li>
+        <li><a>Danh sách NTD</a></li>
       </ol>
     </section>
     <section class="panel panel-inverse">
       <div class="row">
         <div class="panel-body">
           <button class="btn btn-primary m-r-5 m-b-5" @click="showModal">
-            Thêm người dùng
+            Thêm NTD
           </button>
         </div>
         <b-form inline class="m-b-5 m-t-5">
@@ -40,7 +40,7 @@
           :filter="filter"
         >
           <template v-slot:cell(status)="{ item }">
-            {{item.status === 1?'Đã xác nhận':'Chưa xác nhận'}}
+            {{ item.status === 1 ? 'Đã xác nhận' : 'Chưa xác nhận' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
             <b-icon
@@ -74,7 +74,7 @@
         v-show="isModalViewGPKD"
         @close="closeModalViewGPKD"
       />
-      <adduser
+      <AddBusiness
         @inputData="updateMessage"
         v-show="isModalVisible"
         @close="closeModal"
@@ -89,11 +89,11 @@
   </div>
 </template>
 <script>
-import adduser from "@/components/businesses/adduser";
-import edituser from "@/components/businesses/edituser";
-import viewGPKD from "@/components/businesses/viewGPKD";
-import Multiselect from "vue-multiselect";
-const { BASE_URL } = require("../../utils/config");
+import AddBusiness from '@/components/businesses/AddBusiness';
+import edituser from '@/components/businesses/edituser';
+import viewGPKD from '@/components/businesses/viewGPKD';
+import Multiselect from 'vue-multiselect';
+const { BASE_URL } = require('../../utils/config');
 export default {
   data() {
     return {
@@ -108,62 +108,62 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
-      itemid: "",
+      itemid: '',
       fields: [
         {
-          key: "name",
-          label: "Tên công ty",
+          key: 'name',
+          label: 'Tên công ty',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "username",
-          label: "Mã số thuế",
+          key: 'username',
+          label: 'Mã số thuế',
           sortable: true,
           $isDisabled: true
         },
         {
-          key: "createAt",
-          label: "Thời gian đăng kí",
+          key: 'createAt',
+          label: 'Thời gian đăng kí',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "manager",
-          label: "Người đăng kí",
+          key: 'manager',
+          label: 'Người đăng kí',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "position",
-          label: "Chức vụ",
+          key: 'position',
+          label: 'Chức vụ',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "phone",
-          label: "Số điện thoại",
+          key: 'phone',
+          label: 'Số điện thoại',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "email",
-          label: "Email",
+          key: 'email',
+          label: 'Email',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
         {
-          key: "status",
-          label: "Trạng thái",
+          key: 'status',
+          label: 'Trạng thái',
           sortable: true,
-          thClass: "text-center"
+          thClass: 'text-center'
         },
-        { key: "actions", label: "Thao tác", sortable: false }
+        { key: 'actions', label: 'Thao tác', sortable: false }
       ]
     };
   },
   components: {
-    adduser,
+    AddBusiness,
     edituser,
     viewGPKD,
     Multiselect
@@ -190,12 +190,11 @@ export default {
     closeEditModal() {
       this.isModalEditVisible = false;
     },
-    
-   
+
     clickCallback(pageNum) {
       this.$http
         .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
-          headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
+          headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
         })
         .then(response => (this.items = response.data));
     },
@@ -204,9 +203,9 @@ export default {
     },
     deleteItem(id, name) {
       this.$confirm({
-        message: "Bạn có muốn xóa " + name,
+        message: 'Bạn có muốn xóa ' + name,
         button: {
-          yes: "Đồng ý"
+          yes: 'Đồng ý'
         },
         callback: confirm => {
           if (confirm) {
@@ -216,7 +215,7 @@ export default {
 
                 {
                   headers: {
-                    Authorization: `Basic ${localStorage.getItem("token")}`
+                    Authorization: `Basic ${localStorage.getItem('token')}`
                   }
                 }
               )
@@ -224,14 +223,14 @@ export default {
                 this.$http
                   .get(`${BASE_URL}/business/getall`, {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`
+                      Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
                   .then(response => (this.items = response.data));
                 this.$http
-                  .get("api/user/getcountuser", {
+                  .get('api/user/getcountuser', {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`
+                      Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
                   .then(response => (this.totalRows = response.data));
@@ -247,7 +246,7 @@ export default {
   created() {
     this.$http
       .get(`${BASE_URL}/business/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
+        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then(response => {
         this.items = response.data;
