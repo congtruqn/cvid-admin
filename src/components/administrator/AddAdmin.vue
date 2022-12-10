@@ -59,7 +59,6 @@
                 label="name"
               ></multiselect>
             </div>
-            {{ roles }}
             <div class="panel-body_modal">
               <button class="btn btn-primary m-r-5 m-b-5" @click="handleSubmit">
                 Lưu
@@ -91,15 +90,57 @@ export default {
         {
           roleGroup: 'Người lao động',
           role: [
-            { name: 'NLD Duyệt 1', value: 'nldC1' },
-            { name: 'NLD Duyệt 2', value: 'nldC2' }
+            { name: 'Duyệt NLD 1', value: 'nldC1' },
+            { name: 'Duyệt NLD 2', value: 'nldC2' },
+            { name: 'Xóa NLD', value: 'nldD' }
           ]
         },
         {
           roleGroup: 'Nhà tuyển dụng',
           role: [
-            { name: 'NTD Duyệt 1', value: 'ntdC1' },
-            { name: 'NTD Duyệt 2', value: 'ntdC2' }
+            { name: 'Duyệt NTD 1', value: 'ntdC1' },
+            { name: 'Duyệt NTD 2', value: 'ntdC2' },
+            { name: 'Xóa NTD', value: 'ntdD' }
+          ]
+        },
+        {
+          roleGroup: 'Chức danh công việc',
+          role: [
+            { name: 'Thêm chức danh', value: '' },
+            { name: 'Sửa chức danh', value: '' },
+            { name: 'Xóa chức danh', value: '' }
+          ]
+        },
+        {
+          roleGroup: 'Môi trường làm việc',
+          role: [
+            { name: 'Thêm môi trường làm việc', value: '' },
+            { name: 'Sửa môi trường làm việc', value: '' },
+            { name: 'Xóa môi trường làm việc', value: '' }
+          ]
+        },
+        {
+          roleGroup: 'Loại hình doanh nghiệp',
+          role: [
+            { name: 'Thêm loại hình doanh nghiệp', value: '' },
+            { name: 'Sửa loại hình doanh nghiệp', value: '' },
+            { name: 'Xóa loại hình doanh nghiệp', value: '' }
+          ]
+        },
+        {
+          roleGroup: 'Danh sách trường',
+          role: [
+            { name: 'Thêm trường', value: '' },
+            { name: 'Sửa trường', value: '' },
+            { name: 'Xóa trường', value: '' }
+          ]
+        },
+        {
+          roleGroup: 'Danh sách chức vụ',
+          role: [
+            { name: 'Thêm chức vụ', value: '' },
+            { name: 'Sửa chức vụ', value: '' },
+            { name: 'Xóa chức vụ', value: '' }
           ]
         }
       ]

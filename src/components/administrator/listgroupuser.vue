@@ -101,26 +101,40 @@
                   </div>
                 </div>
               </div>
-              <b-col cols="12" md="6">
+            </b-row>
+            <b-row v-if="userInfo._id !== row.item._id">
+              <div class="col-md-6">
                 <b-form-group
                   label="Nhóm chức năng NLĐ"
                   v-slot="{ ariaDescribedby }"
                 >
                   <b-row>
-                    <b-col cols="6" sm="4" md="4">
+                    <div class="col-xs-6 col-sm-4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
                         v-model="row.item.roles"
                         :aria-describedby="ariaDescribedby"
                         ><b>Quản lí NLĐ:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
-                        <b-form-checkbox value="apple">Sửa</b-form-checkbox>
-                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox> -->
+                        <b-form-checkbox value="apple">Sửa</b-form-checkbox> -->
                         <b-form-checkbox value="nldC1">Duyệt 1</b-form-checkbox>
                         <b-form-checkbox value="nldC2">Duyệt 2</b-form-checkbox>
+                        <b-form-checkbox value="nldD">Xóa</b-form-checkbox>
                       </b-form-checkbox-group>
-                    </b-col>
-                    <b-col cols="6" sm="4" md="4">
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Quản lí tìm việc:</b><br />
+                        <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="apple">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
+                        <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
+                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
+                      </b-form-checkbox-group>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
                         :aria-describedby="ariaDescribedby"
@@ -131,29 +145,17 @@
                         <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
                         <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
                       </b-form-checkbox-group>
-                    </b-col>
-                    <b-col cols="6" sm="4" md="4">
-                      <b-form-checkbox-group
-                        id="checkbox-group-2"
-                        :aria-describedby="ariaDescribedby"
-                        ><b>Quản lí NLĐ:</b><br />
-                        <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
-                        <b-form-checkbox value="apple">Sửa</b-form-checkbox>
-                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
-                      </b-form-checkbox-group>
-                    </b-col>
+                    </div>
                   </b-row>
                 </b-form-group>
-              </b-col>
-              <b-col cols="12" md="6">
+              </div>
+              <div class="col-md-6">
                 <b-form-group
                   label="Nhóm chức năng NTD"
                   v-slot="{ ariaDescribedby }"
                 >
                   <b-row>
-                    <b-col cols="6" sm="4" md="4">
+                    <div class="col-xs-6 col-sm-4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
                         v-model="row.item.roles"
@@ -164,35 +166,126 @@
                         <b-form-checkbox value="pineapple">Xóa</b-form-checkbox> -->
                         <b-form-checkbox value="ntdC1">Duyệt 1</b-form-checkbox>
                         <b-form-checkbox value="ntdC2">Duyệt 2</b-form-checkbox>
+                        <b-form-checkbox value="ntdD">Xóa</b-form-checkbox>
                       </b-form-checkbox-group>
-                    </b-col>
-                    <b-col cols="6" sm="4" md="4">
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
                         :aria-describedby="ariaDescribedby"
-                        ><b>Quản lí NTD:</b><br />
+                        ><b>Quản lí phòng ban:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
                         <b-form-checkbox value="apple">Sửa</b-form-checkbox>
                         <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
                         <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
                         <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
                       </b-form-checkbox-group>
-                    </b-col>
-                    <b-col cols="6" sm="4" md="4">
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
                       <b-form-checkbox-group
                         id="checkbox-group-2"
                         :aria-describedby="ariaDescribedby"
-                        ><b>Quản lí NTD:</b><br />
+                        ><b>Tin tuyển dụng:</b><br />
                         <!-- <b-form-checkbox value="orange">Thêm</b-form-checkbox>
                         <b-form-checkbox value="apple">Sửa</b-form-checkbox>
-                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 1</b-form-checkbox>
-                        <b-form-checkbox value="grape">Duyệt 2</b-form-checkbox> -->
+                        <b-form-checkbox value="pineapple">Xóa</b-form-checkbox> -->
+                        <b-form-checkbox value="ttdC1">Duyệt 1</b-form-checkbox>
+                        <b-form-checkbox value="ttdC2">Duyệt 2</b-form-checkbox>
                       </b-form-checkbox-group>
-                    </b-col>
+                    </div>
                   </b-row>
                 </b-form-group>
-              </b-col>
+              </div>
+              <div class="col-md-12">
+                <b-form-group
+                  label="Quản lý danh mục"
+                  v-slot="{ ariaDescribedby }"
+                >
+                  <b-row>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        v-model="row.item.roles"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Chức danh công việc:</b><br />
+                        <b-form-checkbox value="A">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="E">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="D">Xóa</b-form-checkbox>
+                      </b-form-checkbox-group>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Môi trường làm việc:</b><br />
+                        <b-form-checkbox value="A">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="E">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="D">Xóa</b-form-checkbox>
+                      </b-form-checkbox-group>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Loại hình doanh nghiệp:</b><br />
+                        <b-form-checkbox value="A">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="E">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="D">Xóa</b-form-checkbox>
+                      </b-form-checkbox-group>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Danh sách trường:</b><br />
+                        <b-form-checkbox value="A">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="E">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="D">Xóa</b-form-checkbox>
+                      </b-form-checkbox-group>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Danh sách chức vụ:</b><br />
+                        <b-form-checkbox value="A">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="E">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="D">Xóa</b-form-checkbox>
+                      </b-form-checkbox-group>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Danh sách chuyên nghành:</b><br />
+                        <b-form-checkbox value="A">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="E">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="D">Xóa</b-form-checkbox>
+                      </b-form-checkbox-group>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Các nghành công nghiệp :</b><br />
+                        <b-form-checkbox value="A">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="E">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="D">Xóa</b-form-checkbox>
+                      </b-form-checkbox-group>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <b-form-checkbox-group
+                        id="checkbox-group-2"
+                        :aria-describedby="ariaDescribedby"
+                        ><b>Câu hỏi đánh giá :</b><br />
+                        <b-form-checkbox value="A">Thêm</b-form-checkbox>
+                        <b-form-checkbox value="E">Sửa</b-form-checkbox>
+                        <b-form-checkbox value="D">Xóa</b-form-checkbox>
+                      </b-form-checkbox-group>
+                    </div>
+                  </b-row>
+                </b-form-group>
+              </div>
             </b-row>
 
             <b-button size="sm" @click="row.toggleDetails"
@@ -255,6 +348,7 @@ const { BASE_URL } = require('../../utils/config');
 export default {
   data() {
     return {
+      userInfo: JSON.parse(localStorage.getItem('user')),
       encodedURL: `?token=${encodeURIComponent(localStorage.getItem('token'))}`,
       filter: null,
       isModalVisible: false,
@@ -290,7 +384,7 @@ export default {
         },
         {
           key: 'show_details',
-          label: 'Kích hoạt',
+          label: 'Quyền hạn',
           thClass: 'text-center'
         },
         { key: 'actions', label: 'Thao tác', sortable: false }
@@ -349,7 +443,7 @@ export default {
     },
     editItem(item) {
       if (item.password != item.password2) {
-        return alert('Xác nhận mật khẩu không khớp')
+        return alert('Xác nhận mật khẩu không khớp');
       }
       this.$http
         .put(
@@ -364,7 +458,7 @@ export default {
           }
         )
         .then(response => {
-          alert('Cập nhật thành công')
+          alert('Cập nhật thành công');
         })
         .catch(function(error) {
           console.error(error.response);
