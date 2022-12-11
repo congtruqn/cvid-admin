@@ -41,12 +41,12 @@
           </a>
           <ul class="sub-menu">
             <li><a href="/jobtitles">Chức danh công việc</a></li>
-            <li><a href="/">Môi trường làm việc</a></li>
-            <li><a href="/">Loại hình doanh nghiệp</a></li>
+            <li><a href="/environments">Môi trường làm việc</a></li>
+            <li><a href="/typebusiness">Loại hình doanh nghiệp</a></li>
             <li><a href="/schools">Danh sách trường</a></li>
-            <li><a href="/">Danh sách chức vụ</a></li>
-            <li><a href="/">Danh sách chuyên nghành</a></li>
-            <li><a href="/">Nghành công nghiệp</a></li>
+            <li><a href="/positions">Danh sách chức vụ</a></li>
+            <li><a href="/majors">Danh sách chuyên nghành</a></li>
+            <li><a href="/industries">Nghành công nghiệp</a></li>
             <li><a href="/a">Câu hỏi đánh giá</a></li>
           </ul>
         </li>
@@ -84,7 +84,6 @@ export default {
       .then(response => {
         if (response.data) {
           let admin = response.data;
-          console.log(admin.roles)
           admin.roles.forEach(role => {
             if (['nldC1', 'nldC2'].includes(role)){
               this.nld = true

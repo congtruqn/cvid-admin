@@ -1,48 +1,56 @@
-<!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div>
     <section class="content-header">
-      <h1>Quản lý NTD đăng kí</h1>
+      <h1>Quản lý chức danh công việc</h1>
       <ol class="breadcrumb">
         <li>
           <a><i class="fa fa-dashboard"></i>Trang chủ</a>
         </li>
-        <li><a>Danh sách NTD</a></li>
+        <li><a>Danh sách chức danh công việc</a></li>
       </ol>
     </section>
     <section class="panel panel-inverse">
       <div class="row">
         <div class="panel-body">
-          <button class="btn btn-primary m-r-5 m-b-5" @click="showModal">
-            Thêm NTD
-          </button>
+          <b-form inline v-on:submit.prevent>
+            <b-form-select
+              v-model="perPage"
+              :options="pageOptions"
+              class="form-control"
+              @input="clickCallback(1)"
+            ></b-form-select>
+            <b-button variant="primary" @click="showModal" style="float: right"
+              >Thêm chức danh công việc</b-button
+            >
+            <b-input-group size="sm" class="m-r-5" style="float: right">
+              <b-form-input
+                type="search"
+                v-model="filter"
+                placeholder="Search terms"
+              ></b-form-input>
+            </b-input-group>
+          </b-form>
         </div>
-        <b-form inline class="m-b-5 m-t-5">
-          <b-form-select
-            v-model="perPage"
-            :options="pageOptions"
-            class="form-control"
-          ></b-form-select>
-          <b-input-group size="sm" class="" style="float: right">
-            <b-form-input
-              type="search"
-              v-model="filter"
-              placeholder="Search terms"
-            ></b-form-input>
-          </b-input-group>
-        </b-form>
         <b-table
           striped
           bordered
-          hover
           :items="items"
           :fields="fields"
+          :current-page="currentPage"
+          :per-page="perPage"
           :filter="filter"
+          @filtered="onFiltered"
         >
-          <template v-slot:cell(status)="{ item }">
-            {{ item.status === 1 ? 'Đã xác nhận' : 'Chưa xác nhận' }}
+          <template #cell(index)="data">
+            {{ data.index + 1 }}
           </template>
           <template v-slot:cell(actions)="{ item }">
+            <b-icon
+              icon="pen"
+              variant="primary"
+              style="margin: auto"
+              @click="showEditModal(item)"
+            ></b-icon>
             <b-icon
               icon="trash"
               variant="danger"
@@ -69,17 +77,12 @@
         >
         </paginate>
       </div>
-      <viewGPKD
-        :itemid="itemid"
-        v-show="isModalViewGPKD"
-        @close="closeModalViewGPKD"
-      />
-      <AddBusiness
+      <AddItem
         @inputData="updateMessage"
         v-show="isModalVisible"
         @close="closeModal"
       />
-      <edituser
+      <EditItem
         :itemid="itemid"
         v-show="isModalEditVisible"
         @close="closeEditModal"
@@ -89,10 +92,8 @@
   </div>
 </template>
 <script>
-import AddBusiness from '@/components/businesses/AddBusiness';
-import edituser from '@/components/businesses/edituser';
-import viewGPKD from '@/components/businesses/viewGPKD';
-import Multiselect from 'vue-multiselect';
+import AddItem from './AddItem.vue';
+import EditItem from './EditItem.vue';
 const { BASE_URL } = require('../../utils/config');
 export default {
   data() {
@@ -100,103 +101,49 @@ export default {
       filter: null,
       isModalVisible: false,
       isModalEditVisible: false,
-      isModalViewGPKD: false,
-      jobtitles: [],
       items: [],
       totalRows: 1,
       perPage: 20,
       pageOptions: [10, 20, 50, 100],
-      currentPage: Number(this.$route.query.page),
-      page: Number(this.$route.query.page),
+      currentPage: Number(this.$route.query.page) || 1,
       itemid: '',
       fields: [
+        { key: 'index', label: 'STT' },
         {
           key: 'name',
-          label: 'Tên công ty',
-          sortable: true,
-          $isDisabled: true
-        },
-        {
-          key: 'username',
-          label: 'Mã số thuế',
-          sortable: true,
-          $isDisabled: true
-        },
-        {
-          key: 'createAt',
-          label: 'Thời gian đăng kí',
-          sortable: true,
-          thClass: 'text-center'
-        },
-        {
-          key: 'manager',
-          label: 'Người đăng kí',
-          sortable: true,
-          thClass: 'text-center'
-        },
-        {
-          key: 'position',
-          label: 'Chức vụ',
-          sortable: true,
-          thClass: 'text-center'
-        },
-        {
-          key: 'phone',
-          label: 'Số điện thoại',
-          sortable: true,
-          thClass: 'text-center'
-        },
-        {
-          key: 'email',
-          label: 'Email',
-          sortable: true,
-          thClass: 'text-center'
-        },
-        {
-          key: 'status',
-          label: 'Trạng thái',
-          sortable: true,
-          thClass: 'text-center'
+          label: 'Chức danh công việc',
+          sortable: true
         },
         { key: 'actions', label: 'Thao tác', sortable: false }
       ]
     };
   },
   components: {
-    AddBusiness,
-    edituser,
-    viewGPKD,
-    Multiselect
+    AddItem,
+    EditItem
   },
+  computed: {},
   methods: {
     showModal() {
       this.isModalVisible = true;
     },
-    showisModalEditVisible(id) {
+    showEditModal(id) {
       this.itemid = id;
       this.isModalEditVisible = true;
     },
-    showModalViewGPKD(id) {
-      this.itemid = id;
-      this.isModalViewGPKD = true;
-    },
-    closeModalViewGPKD() {
-      this.isModalViewGPKD = false;
-    },
-
     closeModal() {
       this.isModalVisible = false;
     },
     closeEditModal() {
       this.isModalEditVisible = false;
     },
-
     clickCallback(pageNum) {
-      this.$http
-        .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
-          headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
-        })
-        .then(response => (this.items = response.data));
+      this.currentPage = pageNum;
+    },
+    onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
     },
     updateMessage(variable) {
       this.items = variable;
@@ -210,9 +157,11 @@ export default {
         callback: confirm => {
           if (confirm) {
             this.$http
-              .get(
-                `${BASE_URL}/business/delete/${id}`,
-
+              .post(
+                'jobtitle/delete',
+                {
+                  id: id
+                },
                 {
                   headers: {
                     Authorization: `Basic ${localStorage.getItem('token')}`
@@ -221,19 +170,15 @@ export default {
               )
               .then(response => {
                 this.$http
-                  .get(`${BASE_URL}/business/getall`, {
+                  .get(`${BASE_URL}/jobtitle/getall`, {
                     headers: {
                       Authorization: `Basic ${localStorage.getItem('token')}`
                     }
                   })
-                  .then(response => (this.items = response.data));
-                this.$http
-                  .get('api/user/getcountuser', {
-                    headers: {
-                      Authorization: `Basic ${localStorage.getItem('token')}`
-                    }
-                  })
-                  .then(response => (this.totalRows = response.data));
+                  .then(response => {
+                    this.items = response.data;
+                    this.totalRows = this.items.length;
+                  });
               })
               .catch(function(error) {
                 console.error(error.response);
@@ -243,9 +188,10 @@ export default {
       });
     }
   },
+
   created() {
     this.$http
-      .get(`${BASE_URL}/business/getall`, {
+      .get(`${BASE_URL}/jobtitle/getall`, {
         headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then(response => {

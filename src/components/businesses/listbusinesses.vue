@@ -413,7 +413,7 @@ export default {
       })
       .then(response => {
         this.items = response.data;
-        this.totalRows = response.data.length;
+        this.totalRows = this.items.length;
         if (this.$route.query.page === undefined) {
           this.currentPage = 1;
         }

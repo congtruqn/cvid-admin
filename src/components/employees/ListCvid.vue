@@ -344,7 +344,7 @@ export default {
                   })
                   .then((response) => {
                     this.items = response.data.filter(item => item.confirmPhone === true)
-                    this.totalRows = response.data.length
+                    this.totalRows = this.items.length
                   })
               })
               .catch(function (error) {
