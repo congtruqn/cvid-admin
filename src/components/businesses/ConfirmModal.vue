@@ -15,14 +15,20 @@ export default {
   methods: {
     confirm () {
       this.itemid.status = 1
+      this.itemid.confirmAt = new Date()
+      this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name
       this.$emit("close");
     },
     notConfirm () {
       this.itemid.status = -1
+      this.itemid.confirmAt = new Date()
+      this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name
       this.$emit("close");
     },
     cancelConfirm () {
       this.itemid.status = 0
+      this.itemid.confirmAt = new Date()
+      this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name
       this.$emit("close");
     }
   },

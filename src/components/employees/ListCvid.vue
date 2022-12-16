@@ -366,8 +366,7 @@ export default {
           console.log(admin)
           this.fields = this.fields.filter(item => {
             if (item.value !== '') {
-              console.log(admin.roles.includes(item.value))
-              return admin.roles.includes(item.value)
+              return admin.roles.includes(item.value) || admin.roles.includes('admin')
             }
             return true
           })

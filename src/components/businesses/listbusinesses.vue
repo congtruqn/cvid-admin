@@ -60,7 +60,9 @@
               <div
                 :class="
                   item.confirm1.status == 1
-                    ? 'status-confirm active'
+                    ? 'status-confirm accept'
+                    : item.confirm1.status == -1
+                    ? 'status-confirm reject'
                     : 'status-confirm'
                 "
               ></div>
@@ -90,12 +92,14 @@
 
           <template v-slot:cell(confirm2.status)="{ item }">
             <div
-              @click="item.confirm1.status == 1 && ConfirmModal(item.confirm2)"
+              @click="item.confirm1.status == 1 && item.confirm2.status != 1 && ConfirmModal(item.confirm2)"
             >
               <div
                 :class="
                   item.confirm2.status == 1
-                    ? 'status-confirm active'
+                    ? 'status-confirm accept'
+                    : item.confirm2.status == -1
+                    ? 'status-confirm reject'
                     : 'status-confirm'
                 "
               ></div>
@@ -117,7 +121,7 @@
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
             {{
-              item.confirm2 && item.confirm2.status == 1
+              item.confirm2 && item.confirm2.status !== 0
                 ? item.confirm2.confirmBy
                 : ''
             }}
@@ -222,7 +226,7 @@ export default {
           value: ''
         },
         {
-          key: 'use',
+          key: 'manager',
           label: 'Người đại diện',
           sortable: true,
           value: ''
@@ -239,7 +243,7 @@ export default {
           label: 'Thời gian duyệt 1',
           sortable: true,
           thClass: 'text-center',
-          value: 'ntdC1',
+          value: 'ntdC1'
         },
         {
           key: 'confirm1.confirmBy',
@@ -400,8 +404,10 @@ export default {
           console.log(admin);
           this.fields = this.fields.filter(item => {
             if (item.value !== '') {
-              console.log(admin.roles.includes(item.value));
-              return admin.roles.includes(item.value);
+              return (
+                admin.roles.includes(item.value) ||
+                admin.roles.includes('admin')
+              );
             }
             return true;
           });
@@ -412,7 +418,9 @@ export default {
         headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
       })
       .then(response => {
-        this.items = response.data;
+        this.items = response.data.filter(item => {
+          return item.confirmEmail === true;
+        });
         this.totalRows = this.items.length;
         if (this.$route.query.page === undefined) {
           this.currentPage = 1;
@@ -429,7 +437,10 @@ export default {
   border: 1px solid black;
   display: inline-block;
 }
-.status-confirm.active {
+.status-confirm.accept {
   background: green;
+}
+.status-confirm.reject {
+  background: red;
 }
 </style>

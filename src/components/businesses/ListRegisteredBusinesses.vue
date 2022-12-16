@@ -40,7 +40,7 @@
           :filter="filter"
         >
           <template v-slot:cell(status)="{ item }">
-            {{ item.status === 1 ? 'Đã xác nhận' : 'Chưa xác nhận' }}
+            {{ item.confirmEmail === true ? 'Đã xác nhận' : 'Chưa xác nhận' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
             <b-icon
@@ -123,7 +123,7 @@ export default {
           $isDisabled: true
         },
         {
-          key: 'createAt',
+          key: 'createdAt',
           label: 'Thời gian đăng kí',
           sortable: true,
           thClass: 'text-center'
