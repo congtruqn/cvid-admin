@@ -7,43 +7,105 @@
   </div>
 </template>
 <script>
+const {BASE_URL} = require('../../utils/config');
 export default {
   name: 'ConfirmModal',
-  data () {
-    return {}
+  data() {
+    return {};
   },
   methods: {
-    confirm () {
-      this.itemid.status = 1
-      this.itemid.confirmAt = new Date()
-      this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name
-      this.$emit("close");
+    confirm() {
+      this.$http
+        .post(
+          `${BASE_URL}/business/confirm1`,
+          {
+            id: this.itemid._id,
+            confirm: {
+              status: 1,
+            },
+          },
+          {
+            headers: {
+              Authorization: `Basic ${localStorage.getItem('token')}`,
+            },
+          }
+        )
+        .then(response => {
+          this.itemid.status = 1;
+          this.itemid.confirmAt = new Date();
+          this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name;
+          this.$emit('close');
+        })
+        .catch(function(error) {
+          console.error(error.response);
+        });
     },
-    notConfirm () {
-      this.itemid.status = -1
-      this.itemid.confirmAt = new Date()
-      this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name
-      this.$emit("close");
+
+    notConfirm() {
+      this.$http
+        .post(
+          `${BASE_URL}/business/confirm2`,
+          {
+            id: this.itemid._id,
+            confirm: {
+              status: 1,
+            },
+          },
+          {
+            headers: {
+              Authorization: `Basic ${localStorage.getItem('token')}`,
+            },
+          }
+        )
+        .then(response => {
+          this.itemid.status = 1;
+          this.itemid.confirmAt = new Date();
+          this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name;
+          this.$emit('close');
+        })
+        .catch(function(error) {
+          console.error(error.response);
+        });
     },
-    cancelConfirm () {
-      this.itemid.status = 0
-      this.itemid.confirmAt = new Date()
-      this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name
-      this.$emit("close");
-    }
+    cancelConfirm() {
+      this.$http
+        .post(
+          `${BASE_URL}/business/confirm1`,
+          {
+            id: this.itemid._id,
+            confirm: {
+              status: 0,
+            },
+          },
+          {
+            headers: {
+              Authorization: `Basic ${localStorage.getItem('token')}`,
+            },
+          }
+        )
+        .then(response => {
+          this.itemid.status = 0;
+          this.itemid.confirmAt = new Date();
+          this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name;
+          this.$emit('close');
+        })
+        .catch(function(error) {
+          console.error(error.response);
+        });
+    },
   },
-  props: ['itemid']
-}
+  props: ['itemid'],
+};
 </script>
 
 <style scoped>
 .modal-confirm {
-    position: absolute;
-    background: white;
-    left: 50%;
-    top: 30%;
-    width: auto;
-    padding: 10px 20px;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  background: white;
+  left: 50%;
+  top: 30%;
+  width: auto;
+  padding: 10px 20px;
+  transform: translate(-50%, -50%);
 }
 </style>

@@ -39,6 +39,9 @@
           :fields="fields"
           :filter="filter"
         >
+        <template v-slot:cell(username)="{ item }">
+            <b-link href="https://dangkykinhdoanh.gov.vn/vn/Pages/Trangchu.aspx" target="_blank">{{item.username}}</b-link>
+          </template>
           <template v-slot:cell(urlGPKD)="{ item }">
             <b-link @click="showModalViewGPKD(item)">Xem giấy ĐKKD</b-link>
           </template>

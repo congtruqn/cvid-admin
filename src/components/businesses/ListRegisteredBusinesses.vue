@@ -40,7 +40,7 @@
           :filter="filter"
         >
           <template v-slot:cell(status)="{ item }">
-            {{ item.confirmEmail === true ? 'Đã xác nhận' : 'Chưa xác nhận' }}
+            {{ item.confirmEmail === true ? 'Đã xác thực' : 'Chưa xác thực' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
             <b-icon
