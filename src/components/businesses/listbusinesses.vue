@@ -18,48 +18,33 @@
           </button>
         </div>
         <b-form inline class="m-b-5 m-t-5">
-          <b-form-select
-            v-model="perPage"
-            :options="pageOptions"
-            class="form-control"
-          ></b-form-select>
+          <b-form-select v-model="perPage" :options="pageOptions" class="form-control"></b-form-select>
           <b-input-group size="sm" class="" style="float: right">
-            <b-form-input
-              type="search"
-              v-model="filter"
-              placeholder="Search terms"
-            ></b-form-input>
+            <b-form-input type="search" v-model="filter" placeholder="Search terms"></b-form-input>
           </b-input-group>
         </b-form>
-        <b-table
-          striped
-          bordered
-          hover
-          :items="items"
-          :fields="fields"
-          :filter="filter"
-        >
-        <template v-slot:cell(username)="{ item }">
-            <b-link href="https://dangkykinhdoanh.gov.vn/vn/Pages/Trangchu.aspx" target="_blank">{{item.username}}</b-link>
+        <b-table striped bordered hover :items="items" :fields="fields" :filter="filter">
+          <template v-slot:cell(username)="{ item }">
+            <b-link href="https://dangkykinhdoanh.gov.vn/vn/Pages/Trangchu.aspx" target="_blank">{{
+              item.username
+            }}</b-link>
           </template>
           <template v-slot:cell(urlGPKD)="{ item }">
             <b-link @click="showModalViewGPKD(item)">Xem giấy ĐKKD</b-link>
           </template>
+          <template v-slot:cell(status)="{ item }">
+            <b-form-select v-model="item.status">
+              <b-form-select-option :value="0" disabled>Please select an option</b-form-select-option>
+              <b-form-select-option value="Đang hoạt động">Đang hoạt động</b-form-select-option>
+              <b-form-select-option value="Tạm ngưng hoạt động">Tạm ngưng hoạt động</b-form-select-option>
+              <b-form-select-option value="Đã chuyển chủ thể">Đã chuyển chủ thể</b-form-select-option>
+            </b-form-select>
+          </template>
           <template v-slot:cell(address)="{ item }">
-            {{
-              item.address +
-                ', ' +
-                item.ward +
-                ', ' +
-                item.district +
-                ', ' +
-                item.province
-            }}
+            {{ item.address + ', ' + item.ward + ', ' + item.district + ', ' + item.province }}
           </template>
           <template v-slot:cell(confirm1.status)="{ item }">
-            <div
-              @click="item.confirm2.status != 1 && ConfirmModal(item.confirm1)"
-            >
+            <div @click="item.confirm2.status != 1 && ConfirmModal(item.confirm1, 1)">
               <div
                 :class="
                   item.confirm1.status == 1
@@ -80,23 +65,17 @@
                     minute: '2-digit',
                     year: 'numeric',
                     month: 'short',
-                    day: 'numeric'
+                    day: 'numeric',
                   })
                 : ''
             }}
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
-            {{
-              item.confirm1 && item.confirm1.status !== 0
-                ? item.confirm1.confirmBy
-                : ''
-            }}
+            {{ item.confirm1 && item.confirm1.status !== 0 ? item.confirm1.confirmBy : '' }}
           </template>
 
           <template v-slot:cell(confirm2.status)="{ item }">
-            <div
-              @click="item.confirm1.status == 1 && item.confirm2.status != 1 && ConfirmModal(item.confirm2)"
-            >
+            <div @click="item.confirm1.status == 1 && ConfirmModal(item.confirm2, 2)">
               <div
                 :class="
                   item.confirm2.status == 1
@@ -117,17 +96,13 @@
                     minute: '2-digit',
                     year: 'numeric',
                     month: 'short',
-                    day: 'numeric'
+                    day: 'numeric',
                   })
                 : ''
             }}
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
-            {{
-              item.confirm2 && item.confirm2.status !== 0
-                ? item.confirm2.confirmBy
-                : ''
-            }}
+            {{ item.confirm2 && item.confirm2.status !== 0 ? item.confirm2.confirmBy : '' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
             <b-icon
@@ -139,10 +114,7 @@
           </template>
         </b-table>
       </div>
-      <div
-        id="example2_paginate"
-        class="dataTables_paginate paging_simple_numbers"
-      >
+      <div id="example2_paginate" class="dataTables_paginate paging_simple_numbers">
         <paginate
           v-model="currentPage"
           :page-count="Math.ceil(totalRows / perPage)"
@@ -156,21 +128,9 @@
         >
         </paginate>
       </div>
-      <viewGPKD
-        :itemid="itemid"
-        v-show="isModalViewGPKD"
-        @close="closeModalViewGPKD"
-      />
-      <adduser
-        @inputData="updateMessage"
-        v-show="isModalVisible"
-        @close="closeModal"
-      />
-      <confirmModal
-        :itemid="itemid"
-        v-show="isModalConfirm"
-        @close="closeConfirmModal"
-      />
+      <viewGPKD :itemid="itemid" v-show="isModalViewGPKD" @close="closeModalViewGPKD" />
+      <adduser @inputData="updateMessage" v-show="isModalVisible" @close="closeModal" />
+      <confirmModal :itemid="itemid" :num="num" v-show="isModalConfirm" @close="closeConfirmModal" />
     </section>
   </div>
 </template>
@@ -197,99 +157,101 @@ export default {
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
       itemid: '',
+      num: '',
       fields: [
         {
           key: 'name',
           label: 'Tên công ty',
           sortable: true,
-          value: ''
+          value: '',
         },
         {
           key: 'username',
           label: 'Mã số thuế',
           sortable: true,
-          value: ''
+          value: '',
         },
         {
           key: 'address',
           label: 'Địa chỉ',
           sortable: true,
-          value: ''
+          value: '',
         },
         {
-          key: 'usernjame',
+          key: 'status',
           label: 'Tình trạng hoạt động',
           sortable: true,
-          value: ''
+          value: '',
         },
         {
           key: 'urlGPKD',
           label: 'Giấy ĐKKD',
           sortable: true,
-          value: ''
+          value: '',
         },
         {
           key: 'manager',
           label: 'Người đại diện',
           sortable: true,
-          value: ''
+          value: '',
         },
         {
           key: 'confirm1.status',
           label: 'Trạng thái duyệt 1',
           sortable: true,
           thClass: 'text-center',
-          value: 'ntdC1'
+          value: 'ntdC1',
         },
         {
           key: 'confirm1.confirmAt',
           label: 'Thời gian duyệt 1',
           sortable: true,
           thClass: 'text-center',
-          value: 'ntdC1'
+          value: 'ntdC1',
         },
         {
           key: 'confirm1.confirmBy',
           label: 'Người duyệt 1',
           sortable: true,
           thClass: 'text-center',
-          value: 'ntdC1'
+          value: 'ntdC1',
         },
         {
           key: 'confirm2.status',
           label: 'Trạng thái duyệt 2',
           sortable: true,
           thClass: 'text-center',
-          value: 'ntdC2'
+          value: 'ntdC2',
         },
         {
           key: 'confirm2.confirmAt',
           label: 'Thời gian duyệt 2',
           sortable: true,
           thClass: 'text-center',
-          value: 'ntdC2'
+          value: 'ntdC2',
         },
         {
           key: 'confirm2.confirmBy',
           label: 'Người duyệt 2',
           sortable: true,
           thClass: 'text-center',
-          value: 'ntdC2'
+          value: 'ntdC2',
         },
-        { key: 'actions', label: 'Thao tác', sortable: false, value: '' }
-      ]
+        { key: 'actions', label: 'Thao tác', sortable: false, value: '' },
+      ],
     };
   },
   components: {
     adduser,
     edituser,
     viewGPKD,
-    confirmModal
+    confirmModal,
   },
   methods: {
-    ConfirmModal(itemid) {
+    ConfirmModal(itemid, num) {
       this.isModalConfirm = true;
       this.itemid = itemid;
+      this.num = num;
     },
     closeConfirmModal() {
       this.isModalConfirm = false;
@@ -346,7 +308,7 @@ export default {
     clickCallback(pageNum) {
       this.$http
         .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
-          headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
+          headers: { Authorization: `Basic ${localStorage.getItem('token')}` },
         })
         .then(response => (this.items = response.data));
     },
@@ -358,7 +320,7 @@ export default {
       this.$confirm({
         message: 'Bạn có muốn xóa ' + name,
         button: {
-          yes: 'Đồng ý'
+          yes: 'Đồng ý',
         },
         callback: confirm => {
           if (confirm) {
@@ -368,23 +330,23 @@ export default {
 
                 {
                   headers: {
-                    Authorization: `Basic ${localStorage.getItem('token')}`
-                  }
+                    Authorization: `Basic ${localStorage.getItem('token')}`,
+                  },
                 }
               )
               .then(response => {
                 this.$http
                   .get(`${BASE_URL}/business/getall`, {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem('token')}`
-                    }
+                      Authorization: `Basic ${localStorage.getItem('token')}`,
+                    },
                   })
                   .then(response => (this.items = response.data));
                 this.$http
                   .get('api/user/getcountuser', {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem('token')}`
-                    }
+                      Authorization: `Basic ${localStorage.getItem('token')}`,
+                    },
                   })
                   .then(response => (this.totalRows = response.data));
               })
@@ -392,14 +354,14 @@ export default {
                 console.error(error.response);
               });
           }
-        }
+        },
       });
-    }
+    },
   },
   created() {
     this.$http
       .get(`${BASE_URL}/admin/me`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Basic ${localStorage.getItem('token')}` },
       })
       .then(response => {
         if (response.data) {
@@ -407,10 +369,7 @@ export default {
           console.log(admin);
           this.fields = this.fields.filter(item => {
             if (item.value !== '') {
-              return (
-                admin.roles.includes(item.value) ||
-                admin.roles.includes('admin')
-              );
+              return admin.roles.includes(item.value) || admin.roles.includes('admin');
             }
             return true;
           });
@@ -418,7 +377,7 @@ export default {
       });
     this.$http
       .get(`${BASE_URL}/business/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Basic ${localStorage.getItem('token')}` },
       })
       .then(response => {
         this.items = response.data.filter(item => {
@@ -429,7 +388,7 @@ export default {
           this.currentPage = 1;
         }
       });
-  }
+  },
 };
 </script>
 

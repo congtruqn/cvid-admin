@@ -17,7 +17,7 @@ export default {
     confirm() {
       this.$http
         .post(
-          `${BASE_URL}/business/confirm1`,
+          `${BASE_URL}/business/confirm${this.num}`,
           {
             id: this.itemid._id,
             confirm: {
@@ -44,11 +44,11 @@ export default {
     notConfirm() {
       this.$http
         .post(
-          `${BASE_URL}/business/confirm2`,
+          `${BASE_URL}/business/confirm${this.num}`,
           {
             id: this.itemid._id,
             confirm: {
-              status: 1,
+              status: -1,
             },
           },
           {
@@ -58,7 +58,7 @@ export default {
           }
         )
         .then(response => {
-          this.itemid.status = 1;
+          this.itemid.status = -1;
           this.itemid.confirmAt = new Date();
           this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name;
           this.$emit('close');
@@ -70,7 +70,7 @@ export default {
     cancelConfirm() {
       this.$http
         .post(
-          `${BASE_URL}/business/confirm1`,
+          `${BASE_URL}/business/confirm${this.num}`,
           {
             id: this.itemid._id,
             confirm: {
@@ -94,7 +94,7 @@ export default {
         });
     },
   },
-  props: ['itemid'],
+  props: ['itemid', 'num'],
 };
 </script>
 
