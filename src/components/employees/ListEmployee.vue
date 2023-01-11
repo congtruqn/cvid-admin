@@ -92,7 +92,7 @@ import adduser from '@/components/employees/adduser'
 import edituser from '@/components/employees/edituser'
 import viewcv from '@/components/employees/viewcv'
 import Multiselect from 'vue-multiselect'
-const { BASE_URL } = require('../../utils/config')
+import axios from '../../utils/AxiosInstance'
 export default {
   data () {
     return {
@@ -134,7 +134,7 @@ export default {
           thClass: 'text-center'
         },
         {
-          key: 'professionaltitle',
+          key: 'jobTitle',
           label: 'Chức danh chuyên môn',
           sortable: true,
           thClass: 'text-center'
@@ -142,7 +142,6 @@ export default {
         {
           key: 'confirmPhone',
           label: 'Số CVID',
-          sortable: true,
           class: 'text-center'
 
         },
@@ -266,13 +265,11 @@ export default {
     }
   },
   created () {
-    this.$http
-      .get(`${BASE_URL}/employee/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
-      })
+      axios.get(`employee/get-all`)
+      .then(res => res.data.data)
       .then((response) => {
-        this.items = response.data
-        this.totalRows = response.data.length
+        this.items = response
+        this.totalRows = response.length
         if (this.$route.query.page === undefined) {
           this.currentPage = 1
         }

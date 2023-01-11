@@ -61,36 +61,24 @@
             <td>sxc</td><td>s</td>
           </template>
 
-          <template v-slot:cell(confirm1.status)="{ item }">
-           {{getStatusConfirm(item.confirm1.status)}}
+          <template v-slot:cell(confirm1.confirmed)="{ item }">
+           {{getStatusConfirm(item.confirm1.confirmed)}}
           </template>
           <template v-slot:cell(confirm1.confirmAt)="{ item }">
-           {{item.confirm1 && item.confirm1.status !== 0? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }):'' }}
+           {{item.confirm1 && item.confirm1.confirmed !== 0? new Date(item.confirm1.confirmAt):''}}
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
-           {{item.confirm1 && item.confirm1.status !== 0? item.confirm1.confirmBy :'' }}
+           {{item.confirm1 && item.confirm1.confirmed !== 0? item.confirm1.confirmBy :'' }}
           </template>
 
-          <template v-slot:cell(confirm2.status)="{ item }">
-           {{getStatusConfirm(item.confirm2.status)}}
+          <template v-slot:cell(confirm2.confirmed)="{ item }">
+           {{getStatusConfirm(item.confirm2.confirmed)}}
           </template>
           <template v-slot:cell(confirm2.confirmAt)="{ item }">
-           {{item.confirm2 && item.confirm2.status !== 0? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }):'' }}
+           {{item.confirm2 && item.confirm2.confirmed !== 0? new Date(item.confirm2.confirmAt):'' }}
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
-           {{item.confirm2 && item.confirm2.status !== 0? item.confirm2.confirmBy :'' }}
+           {{item.confirm2 && item.confirm2.confirmed !== 0? item.confirm2.confirmBy :'' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
               <b-icon
@@ -140,6 +128,7 @@ import adduser from '@/components/employees/adduser'
 import edituser from '@/components/employees/edituser'
 import viewcv from '@/components/employees/viewcv'
 import Multiselect from 'vue-multiselect'
+import axios from '../../utils/AxiosInstance'
 const { BASE_URL } = require('../../utils/config')
 export default {
   data () {
@@ -173,7 +162,7 @@ export default {
           value: ''
         },
         {
-          key: 'confirm1.status',
+          key: 'confirm1.confirmed',
           label: 'Trạng thái duyệt 1',
           sortable: true,
           thClass: 'text-center',
@@ -194,7 +183,7 @@ export default {
           value: 'nldC1'
         },
         {
-          key: 'confirm2.status',
+          key: 'confirm2.confirmed',
           label: 'Trạng thái duyệt 2',
           sortable: true,
           thClass: 'text-center',
@@ -372,17 +361,15 @@ export default {
           })
         }
       })
-    this.$http
-      .get(`${BASE_URL}/employee/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
-      })
+      axios.get(`employee/get-all`)
+      .then(res => res.data.data)
       .then((response) => {
-        this.items = response.data.filter(item => item.confirmPhone === true)
+        this.items = response.filter(item => item.confirmPhone === true)
         this.totalRows = this.items.length
-        this.isBusy = false
         if (this.$route.query.page === undefined) {
           this.currentPage = 1
         }
+        this.isBusy = false
       })
   }
 }
