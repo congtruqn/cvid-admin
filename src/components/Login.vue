@@ -11,52 +11,39 @@
   </div>
 </template>
 <script>
-const { BASE_URL } = require('../utils/config');
 
+import axios from '../utils/AxiosInstance';
 export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
     };
   },
   methods: {
     handleSubmit(e) {
       e.preventDefault();
       if (this.password.length > 0) {
-        this.$http
-          .post(`${BASE_URL}/admin/login`, {
+        axios
+          .post(`admin/login`, {
             username: this.email,
-            password: this.password
+            password: this.password,
           })
           .then(response => {
-            if (response.data.userinfo) {
-              localStorage.setItem(
-                'user',
-                JSON.stringify(response.data.userinfo)
-              );
-              localStorage.setItem('token', response.data.token);
-              console.log(1, (JSON.stringify(response.data.userinfo)))
-              // localStorage.setItem(
-              //   'view',
-              //   btoa(JSON.stringify(response.data.userinfo))
-              // );
-
-              if (localStorage.getItem('token') != null) {
-                this.$emit('loggedIn');
-                if (this.$route.params.nextUrl != null) {
-                  this.$router.push(this.$route.params.nextUrl);
-                } else {
-                  this.$router.push('list-employee');
-                }
-              }
+            return response.data;
+          })
+          .then(data => {
+            if (data.token) {
+              localStorage.setItem('token', data.token);
+              this.$router.push('list-employee');
             }
           })
+
           .catch(function(error) {
-            console.error(error.response);
+            alert('Invalid username or password');
           });
       }
-    }
-  }
+    },
+  },
 };
 </script>

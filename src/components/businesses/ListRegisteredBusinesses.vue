@@ -39,7 +39,7 @@
           :fields="fields"
           :filter="filter"
         >
-          <template v-slot:cell(status)="{ item }">
+          <template v-slot:cell(confirmEmail)="{ item }">
             {{ item.confirmEmail === true ? 'Đã xác thực' : 'Chưa xác thực' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
@@ -94,6 +94,7 @@ import edituser from '@/components/businesses/edituser';
 import viewGPKD from '@/components/businesses/viewGPKD';
 import Multiselect from 'vue-multiselect';
 const { BASE_URL } = require('../../utils/config');
+import axios from '../../utils/AxiosInstance';
 export default {
   data() {
     return {
@@ -111,7 +112,7 @@ export default {
       itemid: '',
       fields: [
         {
-          key: 'name',
+          key: 'companyName',
           label: 'Tên công ty',
           sortable: true,
           $isDisabled: true
@@ -129,7 +130,7 @@ export default {
           thClass: 'text-center'
         },
         {
-          key: 'manager',
+          key: 'name',
           label: 'Người đăng kí',
           sortable: true,
           thClass: 'text-center'
@@ -153,7 +154,7 @@ export default {
           thClass: 'text-center'
         },
         {
-          key: 'status',
+          key: 'confirmEmail',
           label: 'Trạng thái',
           sortable: true,
           thClass: 'text-center'
@@ -244,10 +245,8 @@ export default {
     }
   },
   created() {
-    this.$http
-      .get(`${BASE_URL}/business/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
-      })
+   axios
+      .get(`company/get-all`)
       .then(response => {
         this.items = response.data;
         this.totalRows = this.items.length;

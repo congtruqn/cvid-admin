@@ -49,7 +49,7 @@
       </template>
           <template v-slot:cell(viewcv)="{ item }">
             <b> 
-              <a :href="'https://cvidpro.net/cvid/'+item._id+encodedURL" target="_blank">
+              <a :href="'https://cvidpro.net/job-resume/'+item._id+encodedURL" target="_blank">
       Xem CV
               </a>
             </b>
@@ -68,7 +68,7 @@
            {{item.confirm1 && item.confirm1.confirmed !== 0? new Date(item.confirm1.confirmAt):''}}
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
-           {{item.confirm1 && item.confirm1.confirmed !== 0? item.confirm1.confirmBy :'' }}
+           {{item.confirm1 && item.confirm1.confirmed !== 0? item.adminConfirm1.name :'' }}
           </template>
 
           <template v-slot:cell(confirm2.confirmed)="{ item }">
@@ -78,7 +78,7 @@
            {{item.confirm2 && item.confirm2.confirmed !== 0? new Date(item.confirm2.confirmAt):'' }}
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
-           {{item.confirm2 && item.confirm2.confirmed !== 0? item.confirm2.confirmBy :'' }}
+           {{item.confirm2 && item.confirm2.confirmed !== 0? item.adminConfirm2.name :'' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
               <b-icon

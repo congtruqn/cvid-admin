@@ -7,7 +7,8 @@
   </div>
 </template>
 <script>
-const {BASE_URL} = require('../../utils/config');
+const { BASE_URL } = require('../../utils/config');
+import axios from '../../utils/AxiosInstance';
 export default {
   name: 'ConfirmModal',
   data() {
@@ -15,25 +16,13 @@ export default {
   },
   methods: {
     confirm() {
-      this.$http
-        .post(
-          `${BASE_URL}/business/confirm${this.num}`,
-          {
-            id: this.itemid._id,
-            confirm: {
-              status: 1,
-            },
-          },
-          {
-            headers: {
-              Authorization: `Basic ${localStorage.getItem('token')}`,
-            },
-          }
-        )
+      console.log(this.itemid);
+      axios
+        .post(`admin/confirm-company/${this.itemid._id}/${this.num}`, {
+          note: '',
+        })
         .then(response => {
-          this.itemid.status = 1;
-          this.itemid.confirmAt = new Date();
-          this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name;
+          this.$emit("inputData", '')
           this.$emit('close');
         })
         .catch(function(error) {
@@ -42,25 +31,12 @@ export default {
     },
 
     notConfirm() {
-      this.$http
-        .post(
-          `${BASE_URL}/business/confirm${this.num}`,
-          {
-            id: this.itemid._id,
-            confirm: {
-              status: -1,
-            },
-          },
-          {
-            headers: {
-              Authorization: `Basic ${localStorage.getItem('token')}`,
-            },
-          }
-        )
+      axios
+        .post(`admin/not-confirm-company/${this.itemid._id}/${this.num}`, {
+          note: '',
+        })
         .then(response => {
-          this.itemid.status = -1;
-          this.itemid.confirmAt = new Date();
-          this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name;
+          this.$emit("inputData", '')
           this.$emit('close');
         })
         .catch(function(error) {
@@ -68,25 +44,12 @@ export default {
         });
     },
     cancelConfirm() {
-      this.$http
-        .post(
-          `${BASE_URL}/business/confirm${this.num}`,
-          {
-            id: this.itemid._id,
-            confirm: {
-              status: 0,
-            },
-          },
-          {
-            headers: {
-              Authorization: `Basic ${localStorage.getItem('token')}`,
-            },
-          }
-        )
+      axios
+        .post(`admin/cancel-confirm-company/${this.itemid._id}/${this.num}`, {
+          note: '',
+        })
         .then(response => {
-          this.itemid.status = 0;
-          this.itemid.confirmAt = new Date();
-          this.itemid.confirmBy = JSON.parse(localStorage.getItem('user')).name;
+          this.$emit("inputData", '')
           this.$emit('close');
         })
         .catch(function(error) {
@@ -94,7 +57,7 @@ export default {
         });
     },
   },
-  props: ['itemid', 'num'],
+  props: ['itemid', 'num', 'reload'],
 };
 </script>
 

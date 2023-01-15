@@ -33,76 +33,51 @@
             <b-link @click="showModalViewGPKD(item)">Xem giấy ĐKKD</b-link>
           </template>
           <template v-slot:cell(status)="{ item }">
-            <b-form-select v-model="item.status">
-              <b-form-select-option :value="0" disabled>Please select an option</b-form-select-option>
-              <b-form-select-option value="Đang hoạt động">Đang hoạt động</b-form-select-option>
-              <b-form-select-option value="Tạm ngưng hoạt động">Tạm ngưng hoạt động</b-form-select-option>
-              <b-form-select-option value="Đã chuyển chủ thể">Đã chuyển chủ thể</b-form-select-option>
-            </b-form-select>
+            {{ item.status }}
           </template>
           <template v-slot:cell(address)="{ item }">
-            {{ item.address + ', ' + item.ward + ', ' + item.district + ', ' + item.province }}
+            {{ item.address }}
           </template>
-          <template v-slot:cell(confirm1.status)="{ item }">
-            <div @click="item.confirm2.status != 1 && ConfirmModal(item.confirm1, 1)">
+          <template v-slot:cell(confirm1.confirmed)="{ item }">
+            <div @click="item.confirm2.confirmed != 1 && ConfirmModal(item, 1)">
               <div
                 :class="
-                  item.confirm1.status == 1
+                  item.confirm1.confirmed == 1
                     ? 'status-confirm accept'
-                    : item.confirm1.status == -1
+                    : item.confirm1.confirmed == -1
                     ? 'status-confirm reject'
                     : 'status-confirm'
                 "
               ></div>
-              {{ getStatusConfirm(item.confirm1.status) }}
+              {{ getStatusConfirm(item.confirm1.confirmed) }}
             </div>
           </template>
           <template v-slot:cell(confirm1.confirmAt)="{ item }">
-            {{
-              item.confirm1 && item.confirm1.status !== 0
-                ? new Date(item.confirm1.confirmAt).toLocaleString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  })
-                : ''
-            }}
+            {{ item.confirm1 && item.confirm1.confirmed !== 0 ? item.confirm1.confirmAt : '' }}
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
-            {{ item.confirm1 && item.confirm1.status !== 0 ? item.confirm1.confirmBy : '' }}
+            {{ item.confirm1 && item.confirm1.confirmed !== 0 ? item.adminConfirm1.name : '' }}
           </template>
 
-          <template v-slot:cell(confirm2.status)="{ item }">
-            <div @click="item.confirm1.status == 1 && ConfirmModal(item.confirm2, 2)">
+          <template v-slot:cell(confirm2.confirmed)="{ item }">
+            <div @click="item.confirm1.confirmed == 1 && ConfirmModal(item, 2)">
               <div
                 :class="
-                  item.confirm2.status == 1
+                  item.confirm2.confirmed == 1
                     ? 'status-confirm accept'
-                    : item.confirm2.status == -1
+                    : item.confirm2.confirmed == -1
                     ? 'status-confirm reject'
                     : 'status-confirm'
                 "
               ></div>
-              {{ getStatusConfirm(item.confirm2.status) }}
+              {{ getStatusConfirm(item.confirm2.confirmed) }}
             </div>
           </template>
           <template v-slot:cell(confirm2.confirmAt)="{ item }">
-            {{
-              item.confirm2 && item.confirm2.status !== 0
-                ? new Date(item.confirm2.confirmAt).toLocaleString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  })
-                : ''
-            }}
+            {{ item.confirm2 && item.confirm2.confirmed !== 0 ? item.confirm2.confirmAt : '' }}
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
-            {{ item.confirm2 && item.confirm2.status !== 0 ? item.confirm2.confirmBy : '' }}
+            {{ item.confirm2 && item.confirm2.confirmed !== 0 ? item.adminConfirm2.name : '' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
             <b-icon
@@ -130,7 +105,13 @@
       </div>
       <viewGPKD :itemid="itemid" v-show="isModalViewGPKD" @close="closeModalViewGPKD" />
       <adduser @inputData="updateMessage" v-show="isModalVisible" @close="closeModal" />
-      <confirmModal :itemid="itemid" :num="num" v-show="isModalConfirm" @close="closeConfirmModal" />
+      <confirmModal
+        :itemid="itemid"
+        :num="num"
+        @inputData="updateData"
+        v-show="isModalConfirm"
+        @close="closeConfirmModal"
+      />
     </section>
   </div>
 </template>
@@ -139,7 +120,7 @@ import adduser from '@/components/businesses/adduser';
 import edituser from '@/components/businesses/edituser';
 import viewGPKD from '@/components/businesses/viewGPKD';
 import confirmModal from '@/components/businesses/ConfirmModal';
-
+import axios from '../../utils/AxiosInstance';
 const { BASE_URL } = require('../../utils/config');
 export default {
   data() {
@@ -156,11 +137,12 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
+      reload: false,
       itemid: '',
       num: '',
       fields: [
         {
-          key: 'name',
+          key: 'companyName',
           label: 'Tên công ty',
           sortable: true,
           value: '',
@@ -190,13 +172,13 @@ export default {
           value: '',
         },
         {
-          key: 'manager',
+          key: 'representative',
           label: 'Người đại diện',
           sortable: true,
           value: '',
         },
         {
-          key: 'confirm1.status',
+          key: 'confirm1.confirmed',
           label: 'Trạng thái duyệt 1',
           sortable: true,
           thClass: 'text-center',
@@ -217,7 +199,7 @@ export default {
           value: 'ntdC1',
         },
         {
-          key: 'confirm2.status',
+          key: 'confirm2.confirmed',
           label: 'Trạng thái duyệt 2',
           sortable: true,
           thClass: 'text-center',
@@ -316,6 +298,17 @@ export default {
     updateMessage(variable) {
       this.items = variable;
     },
+    updateData(value) {
+      axios.get(`company/get-all`).then(response => {
+        this.items = response.data.filter(item => {
+          return item.confirmEmail === true;
+        });
+        this.totalRows = this.items.length;
+        if (this.$route.query.page === undefined) {
+          this.currentPage = 1;
+        }
+      });
+    },
     deleteItem(id, name) {
       this.$confirm({
         message: 'Bạn có muốn xóa ' + name,
@@ -375,19 +368,16 @@ export default {
           });
         }
       });
-    this.$http
-      .get(`${BASE_URL}/business/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` },
-      })
-      .then(response => {
-        this.items = response.data.filter(item => {
-          return item.confirmEmail === true;
-        });
-        this.totalRows = this.items.length;
-        if (this.$route.query.page === undefined) {
-          this.currentPage = 1;
-        }
+    axios.get(`company/get-all`).then(response => {
+      this.items = response.data.filter(item => {
+        return item.confirmEmail === true;
       });
+      console.log(this.items);
+      this.totalRows = this.items.length;
+      if (this.$route.query.page === undefined) {
+        this.currentPage = 1;
+      }
+    });
   },
 };
 </script>

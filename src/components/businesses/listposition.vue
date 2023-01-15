@@ -48,7 +48,7 @@
                 })}}
           </template>
           <template v-slot:cell(status)="{ item }">
-            <b>{{ displayPositionStatus(item.status) }}</b>
+            <b>{{ item.status ? 'Đang tìm ứng viên' : 'Dừng tìm' }}</b>
           </template>
 
           <template v-slot:cell(confirm1.status)="{ item }">
@@ -165,6 +165,7 @@ import edituser from "@/components/businesses/edituser";
 import viewGPKD from "@/components/businesses/viewGPKD";
 import Multiselect from "vue-multiselect";
 const { BASE_URL } = require("../../utils/config");
+import axios from "../../utils/AxiosInstance";
 export default {
   data() {
     return {
@@ -197,7 +198,7 @@ export default {
       ],
       fields: [
         {
-          key: "jobtitle",
+          key: "title",
           label: "Tên chức danh",
           sortable: true,
           $isDisabled: true
@@ -210,7 +211,7 @@ export default {
         //   thClass: 'text-center'
         // },
         {
-          key: "updateAt",
+          key: "updatedAt",
           label: "Thời gian cập nhật",
           sortable: true,
           thClass: "text-center"
@@ -315,15 +316,7 @@ export default {
           return 'Đã được duyệt'
       }
     },
-    displayPositionStatus(id) {
-      id = parseInt(id);
-      switch (id) {
-        case 0:
-          return "Đang tìm ứng viên";
-        case 1:
-          return "Dừng tìm ứng viên";
-      }
-    },
+   
 
     clickCallback(pageNum) {
       this.$http
@@ -371,10 +364,8 @@ export default {
     }
   },
   created() {
-    this.$http
-      .get(`${BASE_URL}/department/position/getall`, {
-        headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
-      })
+    
+      axios.get(`company/get-all-job`)
       .then(response => {
         console.log(response.data);
         this.items = response.data;

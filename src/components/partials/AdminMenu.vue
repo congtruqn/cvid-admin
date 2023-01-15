@@ -67,6 +67,7 @@
   </div>
 </template>
 <script>
+import axios from '../../utils/AxiosInstance';
 const { BASE_URL } = require('../../utils/config');
 export default {
   data() {
@@ -77,11 +78,10 @@ export default {
     }
   },
   created() {
-    this.$http
-      .get(`${BASE_URL}/admin/me`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
-      })
+    axios
+      .get(`admin/get-role`)
       .then(response => {
+        console.log(response);
         if (response.data) {
           let admin = response.data;
           admin.roles.forEach(role => {
