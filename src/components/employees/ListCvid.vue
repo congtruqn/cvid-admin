@@ -68,7 +68,7 @@
            {{item.confirm1 && item.confirm1.confirmed !== 0? new Date(item.confirm1.confirmAt):''}}
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
-           {{item.confirm1 && item.confirm1.confirmed !== 0? item.adminConfirm1.name :'' }}
+           {{item.confirm1 && item.confirm1.confirmed !== 0 && item.adminConfirm1 ? item.adminConfirm1.name :'' }}
           </template>
 
           <template v-slot:cell(confirm2.confirmed)="{ item }">
@@ -78,7 +78,7 @@
            {{item.confirm2 && item.confirm2.confirmed !== 0? new Date(item.confirm2.confirmAt):'' }}
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
-           {{item.confirm2 && item.confirm2.confirmed !== 0? item.adminConfirm2.name :'' }}
+           {{item.confirm2 && item.confirm2.confirmed !== 0 && item.adminConfirm2 ? item.adminConfirm2.name :'' }}
           </template>
           <template v-slot:cell(actions)="{ item }">
               <b-icon
@@ -345,22 +345,22 @@ export default {
     }
   },
   created () {
-    this.$http
-      .get(`${BASE_URL}/admin/me`, {
-        headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
-      })
-      .then((response) => {
-        if (response.data){
-          let admin = response.data
-          console.log(admin)
-          this.fields = this.fields.filter(item => {
-            if (item.value !== '') {
-              return admin.roles.includes(item.value) || admin.roles.includes('admin')
-            }
-            return true
-          })
-        }
-      })
+    // this.$http
+    //   .get(`${BASE_URL}/admin/me`, {
+    //     headers: { Authorization: `Basic ${localStorage.getItem('token')}` }
+    //   })
+    //   .then((response) => {
+    //     if (response.data){
+    //       let admin = response.data
+    //       console.log('admin', admin)
+    //       this.fields = this.fields.filter(item => {
+    //         if (item.value !== '') {
+    //           return admin.roles.includes(item.value) || admin.roles.includes('admin')
+    //         }
+    //         return true
+    //       })
+    //     }
+    //   })
       axios.get(`employee/get-all`)
       .then(res => res.data.data)
       .then((response) => {
