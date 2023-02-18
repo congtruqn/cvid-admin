@@ -17,90 +17,61 @@
           </button>
         </div>
         <b-form inline class="m-b-5 m-t-5">
-          <b-form-select
-            v-model="perPage"
-            :options="pageOptions"
-            class="form-control"
-          ></b-form-select>
+          <b-form-select v-model="perPage" :options="pageOptions" class="form-control"></b-form-select>
           <b-input-group size="sm" class="" style="float: right">
-            <b-form-input
-              type="search"
-              v-model="filter"
-              placeholder="Search terms"
-            ></b-form-input>
+            <b-form-input type="search" v-model="filter" placeholder="Search terms"></b-form-input>
           </b-input-group>
         </b-form>
-        <b-table
-          striped
-          bordered
-          hover
-          :items="items"
-          :fields="fields"
-          :filter="filter"
-        >
+        <b-table striped bordered hover :items="items" :fields="fields" :filter="filter">
           <template v-slot:cell(updateAt)="{ item }">
-            {{new Date(item.updateAt).toLocaleString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric"
-                })}}
+            {{
+              new Date(item.updateAt).toLocaleString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })
+            }}
           </template>
           <template v-slot:cell(status)="{ item }">
             <b>{{ item.status ? 'Đang tìm ứng viên' : 'Dừng tìm' }}</b>
           </template>
 
-          <template v-slot:cell(confirm1.status)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
+          <template v-slot:cell(viewDetail)="{ item }">
+            <a :href="'https://cvidpro.net/job-detail/' + item._id + encodedURL" target="_blank">Xem chi tiết</a>
+          </template>
+          viewDetail
+          <template v-slot:cell(confirm1.confirmed)="{ item }">
+            {{ getStatusConfirm(item.confirm1.confirmed) }}
           </template>
           <template v-slot:cell(confirm1.confirmAt)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1? new Date(item.confirm1.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }):'' }}
+            {{ item.confirm1 && item.confirm1.confirmed !== 0 ? new Date(item.confirm1.confirmAt) : '' }}
           </template>
           <template v-slot:cell(confirm1.confirmBy)="{ item }">
-           {{item.confirm1 && item.confirm1.status === 1? item.confirm1.confirmBy :'' }}
+            {{item.confirm1 && item.confirm1.confirmed !== 0 && item.adminConfirm1 ? item.adminConfirm1.name :'' }}
           </template>
 
           <template v-slot:cell(confirm2.status)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1?'Đã được duyệt':'Đang chờ duyệt'}}
+            {{ getStatusConfirm(item.confirm2.confirmed) }}
           </template>
           <template v-slot:cell(confirm2.confirmAt)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1? new Date(item.confirm2.confirmAt).toLocaleString("en-US", {
-                hour: '2-digit',
-                minute: '2-digit',
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-              }):'' }}
+            {{ item.confirm2 && item.confirm2.confirmed !== 0 ? new Date(item.confirm2.confirmAt) : '' }}
           </template>
           <template v-slot:cell(confirm2.confirmBy)="{ item }">
-           {{item.confirm2 && item.confirm2.status === 1? item.confirm2.confirmBy :'' }}
+            {{item.confirm2 && item.confirm2.confirmed !== 0 && item.adminConfirm2 ? item.adminConfirm2.name :'' }}
           </template>
 
           <template v-slot:cell(questions)="{ item }">
             <b
               >Xem tiêu chí
-              <b-icon
-                icon="eye"
-                variant="primary"
-                style="float: right"
-              ></b-icon>
+              <b-icon icon="eye" variant="primary" style="float: right"></b-icon>
             </b>
           </template>
           <template v-slot:cell(questions)="{ item }">
             <b
               >Xem tiêu chí
-              <b-icon
-                icon="eye"
-                variant="primary"
-                style="float: right"
-              ></b-icon>
+              <b-icon icon="eye" variant="primary" style="float: right"></b-icon>
             </b>
           </template>
           <template v-slot:cell(actions)="{ item }">
@@ -114,19 +85,12 @@
           <template v-slot:cell(department)="{ item }">
             <b
               >Xem phòng ban
-              <b-icon
-                icon="eye"
-                variant="success"
-                style="float: right"
-              ></b-icon>
+              <b-icon icon="eye" variant="success" style="float: right"></b-icon>
             </b>
           </template>
         </b-table>
       </div>
-      <div
-        id="example2_paginate"
-        class="dataTables_paginate paging_simple_numbers"
-      >
+      <div id="example2_paginate" class="dataTables_paginate paging_simple_numbers">
         <paginate
           v-model="currentPage"
           :page-count="Math.ceil(totalRows / perPage)"
@@ -140,35 +104,24 @@
         >
         </paginate>
       </div>
-      <viewGPKD
-        :itemid="itemid"
-        v-show="isModalViewGPKD"
-        @close="closeModalViewGPKD"
-      />
-      <adduser
-        @inputData="updateMessage"
-        v-show="isModalVisible"
-        @close="closeModal"
-      />
-      <edituser
-        :itemid="itemid"
-        v-show="isModalEditVisible"
-        @close="closeEditModal"
-      />
+      <viewGPKD :itemid="itemid" v-show="isModalViewGPKD" @close="closeModalViewGPKD" />
+      <adduser @inputData="updateMessage" v-show="isModalVisible" @close="closeModal" />
+      <edituser :itemid="itemid" v-show="isModalEditVisible" @close="closeEditModal" />
     </section>
     <vue-confirm-dialog></vue-confirm-dialog>
   </div>
 </template>
 <script>
-import adduser from "@/components/businesses/adduser";
-import edituser from "@/components/businesses/edituser";
-import viewGPKD from "@/components/businesses/viewGPKD";
-import Multiselect from "vue-multiselect";
-const { BASE_URL } = require("../../utils/config");
-import axios from "../../utils/AxiosInstance";
+import adduser from '@/components/businesses/adduser';
+import edituser from '@/components/businesses/edituser';
+import viewGPKD from '@/components/businesses/viewGPKD';
+import Multiselect from 'vue-multiselect';
+const { BASE_URL } = require('../../utils/config');
+import axios from '../../utils/AxiosInstance';
 export default {
   data() {
     return {
+      encodedURL: `?token=${encodeURIComponent(localStorage.getItem('token'))}`,
       filter: null,
       isModalVisible: false,
       isModalEditVisible: false,
@@ -180,7 +133,7 @@ export default {
       pageOptions: [10, 20, 50, 100],
       currentPage: Number(this.$route.query.page),
       page: Number(this.$route.query.page),
-      itemid: "",
+      itemid: '',
       options: [
         // {
         //   key: 'approved',
@@ -198,81 +151,74 @@ export default {
       ],
       fields: [
         {
-          key: "title",
-          label: "Tên chức danh",
+          key: 'title',
+          label: 'Tên chức danh',
           sortable: true,
-          $isDisabled: true
-        },
-       
-        // {
-        //   key: 'approved',
-        //   label: 'Thông tin tuyển dụng',
-        //   sortable: false,
-        //   thClass: 'text-center'
-        // },
-        {
-          key: "updatedAt",
-          label: "Thời gian cập nhật",
-          sortable: true,
-          thClass: "text-center"
-        },
-         {
-          key: "fkd",
-          label: "Nôị dung vị trí TD",
-          sortable: true,
-          thClass: "text-center"
+          $isDisabled: true,
         },
         {
-          key: 'confirm1.status',
+          key: 'updatedAt',
+          label: 'Thời gian cập nhật',
+          sortable: true,
+          thClass: 'text-center',
+        },
+        {
+          key: 'viewDetail',
+          label: 'Nôị dung vị trí TD',
+          sortable: true,
+          thClass: 'text-center',
+        },
+        {
+          key: 'confirm1.confirmed',
           label: 'Trạng thái duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
         },
         {
           key: 'confirm1.confirmAt',
           label: 'Thời gian duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
         },
         {
           key: 'confirm1.confirmBy',
           label: 'Người duyệt 1',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
         },
-       {
-          key: 'confirm2.status',
+        {
+          key: 'confirm2.confirmed',
           label: 'Trạng thái duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
         },
         {
           key: 'confirm2.confirmAt',
           label: 'Thời gian duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
         },
         {
           key: 'confirm2.confirmBy',
           label: 'Người duyệt 2',
           sortable: true,
-          thClass: 'text-center'
+          thClass: 'text-center',
         },
-         {
-          key: "status",
-          label: "Trạng thái tuyển dụng",
+        {
+          key: 'status',
+          label: 'Trạng thái tuyển dụng',
           sortable: false,
-          thClass: "text-center"
+          thClass: 'text-center',
         },
-        { key: "actions", label: "Thao tác", sortable: false }
-      ]
+        { key: 'actions', label: 'Thao tác', sortable: false },
+      ],
     };
   },
   components: {
     adduser,
     edituser,
     viewGPKD,
-    Multiselect
+    Multiselect,
   },
   methods: {
     showModal() {
@@ -299,29 +245,28 @@ export default {
     displayUserType(id) {
       switch (id) {
         case 1:
-          return "Quản trị viên";
+          return 'Quản trị viên';
         case 2:
-          return "Người quản lý";
+          return 'Người quản lý';
         default:
-          return "Nhân viên";
+          return 'Nhân viên';
       }
     },
-    getStatusConfirm (id) {
+    getStatusConfirm(id) {
       switch (id) {
         case -1:
-          return 'Không được duyệt'
+          return 'Không được duyệt';
         case 0:
-          return 'Đang chờ duyệt'
+          return 'Đang chờ duyệt';
         case 1:
-          return 'Đã được duyệt'
+          return 'Đã được duyệt';
       }
     },
-   
 
     clickCallback(pageNum) {
       this.$http
         .get(`${BASE_URL}/employee/getall?page=${pageNum}`, {
-          headers: { Authorization: `Basic ${localStorage.getItem("token")}` }
+          headers: { Authorization: `Basic ${localStorage.getItem('token')}` },
         })
         .then(response => (this.items = response.data));
     },
@@ -330,9 +275,9 @@ export default {
     },
     deleteItem(id, name) {
       this.$confirm({
-        message: "Bạn có muốn xóa " + name,
+        message: 'Bạn có muốn xóa ' + name,
         button: {
-          yes: "Đồng ý"
+          yes: 'Đồng ý',
         },
         callback: confirm => {
           if (confirm) {
@@ -342,16 +287,16 @@ export default {
 
                 {
                   headers: {
-                    Authorization: `Basic ${localStorage.getItem("token")}`
-                  }
+                    Authorization: `Basic ${localStorage.getItem('token')}`,
+                  },
                 }
               )
               .then(response => {
                 this.$http
                   .get(`${BASE_URL}/business/getall`, {
                     headers: {
-                      Authorization: `Basic ${localStorage.getItem("token")}`
-                    }
+                      Authorization: `Basic ${localStorage.getItem('token')}`,
+                    },
                   })
                   .then(response => (this.items = response.data));
               })
@@ -359,21 +304,19 @@ export default {
                 console.error(error.response);
               });
           }
-        }
+        },
       });
-    }
+    },
   },
   created() {
-    
-      axios.get(`company/get-all-job`)
-      .then(response => {
-        console.log(response.data);
-        this.items = response.data;
-        this.totalRows = this.items.length;
-        if (this.$route.query.page === undefined) {
-          this.currentPage = 1;
-        }
-      });
-  }
+    axios.get(`job/get-all`).then(response => {
+      console.log(response.data.data);
+      this.items = response.data.data;
+      this.totalRows = this.items.length;
+      if (this.$route.query.page === undefined) {
+        this.currentPage = 1;
+      }
+    });
+  },
 };
 </script>
