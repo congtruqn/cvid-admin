@@ -39,7 +39,7 @@
           </template>
 
           <template v-slot:cell(viewDetail)="{ item }">
-            <a :href="'https://cvidpro.net/job-detail/' + item._id + encodedURL" target="_blank">Xem chi tiết</a>
+            <a :href="'https://cvidpro.net/confirm/job-detail/' + item._id + encodedURL" target="_blank">Xem chi tiết</a>
           </template>
           viewDetail
           <template v-slot:cell(confirm1.confirmed)="{ item }">

@@ -49,7 +49,7 @@
       </template>
           <template v-slot:cell(viewcv)="{ item }">
             <b> 
-              <a :href="'https://cvidpro.net/job-resume/'+item._id+encodedURL" target="_blank">
+              <a :href="'https://cvidpro.net/confirm/job-resume/'+item._id+encodedURL" target="_blank">
       Xem CV
               </a>
             </b>
